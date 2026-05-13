@@ -40,8 +40,11 @@ print('TODO 6:', result) # [1, 3, 5, 7, 9]
 # TODO 7 Write a program that uses a loop to set the variable named result to be
 # just the squares of the odd numbers from 1 to 10.
 
-# ...
-# print('TODO 7:', result) # [1, 9, 25, 49, 81]
+result = []
+for i in range(1, 10+1):
+    if i % 2 == 1:
+        result.append(i**2)
+print('TODO 7:', result) # [1, 9, 25, 49, 81]
 
 # TODO 8 Re-do the previous question using a list comprehension.
 result = [x**2 for x in range(1, 11) if x % 2 == 1]
