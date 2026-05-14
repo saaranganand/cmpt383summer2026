@@ -461,8 +461,8 @@ print(get_min([3, 2, 4, 1, 5])) # (1, 3)
 ### Iterators
 
 In general, an **iterator** is an object that gives sequential access to a
-collection of objects. A Python iterator is essentiallyan object that has "next"
-method that lets you get the next element from the iterator. 
+collection of objects. A Python iterator is essentially an object that has
+"next" method that lets you get the next element from the iterator. 
 
 Let's build our own iterator (we'll see shortly how to make it an official
 Python iterator):
@@ -556,7 +556,7 @@ it must have these two methods:
 if there are no more values. Python calls it `__next__` instead of `next`
 since it is a Python convention to use double underscores for special methods.
 - `__iter__()` returns the iterator object itself. This usually just returns
-`self`, i.e. the object itself. But a container objects, such as a list, have
+`self`, i.e. the object itself. But container objects, such as a list, have
 `__iter__` so that you can get an iterator object for the container.
 
 The idea is that calling `__iter_()` gets you an iterator object that is
@@ -613,7 +613,7 @@ Or:
 
 ```python
 for c in Letters("cat"):
-    print(letcter)
+    print(c)
 ```
 
 This for-loop is pretty nice: it's short, readable, and doesn't require any

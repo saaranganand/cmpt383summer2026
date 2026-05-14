@@ -53,14 +53,13 @@ print('TODO 8:', result) # [1, 9, 25, 49, 81]
 # TODO 9 Using a list comprehension, make a list of all the non-empty strings in
 # names, and capitalize them.
 names = ['bob', '', 'mary', 'carla', 'sam', 'dean']
-result = [n.capitalize() 
-          for n in names 
-          if n != '']
+result = [n.capitalize() for n in names 
+                         if n != ''
+         ]
 print('TODO 9:', result) # ['Bob', 'Mary', 'Carla', 'Sam', 'Dean']
 
 # TODO 10 Re-do the previous question, but this time print the list as a nicely
 # formatted comma-separated string, e.g. "Bob, Mary, Carla, Sam, Dean".
-names = ['bob', '', 'mary', 'carla', 'sam', 'dean']
 names = ['bob', '', 'mary', 'carla', 'sam', 'dean']
 result = [n.capitalize() for n in names if n != '']
 print('TODO 10:', ', '.join(result)) # 'Bob, Mary, Carla, Sam, Dean'
