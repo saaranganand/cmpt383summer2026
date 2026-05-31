@@ -216,10 +216,32 @@ vice versa).
 
 ### The walrus operator
 
-Suppose you want to get a list of scores for all the names in a list, and
-calling the `get_score` function is relatively expensive (e.g. maybe it has to
-read from a file or database each time it is called). This code works, but is
-inefficient:
+Consider this function:
+
+```python
+def get_score(s): 
+    return sum(ord(c) for c in s)
+```
+
+It returns the sum of the [ASCII values](https://en.wikipedia.org/wiki/ASCII) of
+the characters in the string, e.g. `get_score('cat')` returns 312. A function
+like this might be useful with hash table of string.
+
+Now consider this code, which gets list of all the names and scores that match a
+certain condition:
+
+```python
+all_names = ['Bob', 'Alice', 'Charlie', 'Bev']
+
+high_scores = [(n, get_score(n))
+               for n in all_names 
+               if get_score(n) % 5 != 0
+              ]
+```
+
+For each name, `get_score` is called *twice*, and it returns that same result
+each time. That's inefficient. We can do better by using the **walrus
+operator**, `:=`, to save the value of the result in a variable:
 
 ```python
 # works, but inefficient!
@@ -232,19 +254,10 @@ re-wrote this without list comprehensions we could save the result in a
 variable:
 
 ```python
-high_scores = []
-for name in all_names:
-    score = get_score(name) # get_score only called once
-    if score is not None and score > 90:
-        high_scores.append(score)
-```
-
-We can do the same thing in a list comprehension with the **walrus operator**,
-`:=`, like this:
-
-```python
-high_scores = [score for name in all_names if (score := get_score(name)) is not None
-                                           if score > 90]
+high_scores = [(n, score)
+               for n in all_names 
+               if (score := get_score(n)) % 5 != 0  # walrus operator used here
+              ]
 ```
 
 The first time `get_score` is called its result is saved in the variable `score`
@@ -254,7 +267,7 @@ needing to call `get_score` again.
 In some situations the walrus operator can make code more concise and efficient,
 so be on the lookout for situations where it can be used.
 
-(See [high_scores.py](high_scores.py) for a code example.)
+See [high_scores.py](high_scores.py) for a code example.
 
 ### Using zip
 
@@ -366,6 +379,43 @@ expression generating the list are `True`, and `False` otherwise.
 This is not the most efficient way to write the `is_sorted` function, but it's
 short enough to fit on one line.
 
+#### The Unpacking Operator
+
+As another example of unpacking as shown above, consider this function which
+takes three arguments:
+
+```python
+def f(a, b, c):
+    return a + b + c
+```
+
+We can call it like this:
+
+```python
+print(f(1, 2, 3)) # 6
+```
+
+But suppose we have list of values:
+
+```python
+values = [1, 2, 3]
+print(f(values)) # error: wrong number of arguments
+```
+
+`f` takes three arguments, the expression `f(values)` only passed one argument.
+We could fix it like this:
+
+```python
+print(f(values[0], values[1], values[2])) # 6
+```
+
+That works, but it's a pain to write. The unpacking operator `*` lets us do the
+same thing more concisely:
+
+```python
+print(f(*values)) # 6
+```
+
 #### Transposing a Matrix
 
 Finally, consider **transposing** a matrix (a fundamental operation in linear
@@ -384,7 +434,24 @@ It's transpose is:
 2 4 6
 ```
 
-Transposing swap the rows and columns.
+Transposing swaps the rows and columns.
+
+In Python the first matrix would be:
+
+```python
+[[1, 2],  # row 0
+ [3, 4],  # row 1
+ [5, 6]]  # row 2
+```
+
+And the transpose would be:
+
+```python
+[[1, 3, 5],  # column 0
+ [2, 4, 6]]  # column 1
+```
+
+Can you how `zip` and the `*` unpacking operator to transpose the matrix?
 
 Using `zip` and the `*` operator we can transpose a matrix like this:
 
@@ -406,11 +473,13 @@ lists). `zip([1, 2], [3, 4], [5, 6])` yields these values:
 (2, 4, 6)
 ```
 
-(1, 3, 5) holds the firsts elements of each list, and (2, 4, 6) holds the  
-second elements. After converting the tuples to lists, you get the transpose of  
+`(1, 3, 5)` holds the firsts elements of each list, and `(2, 4, 6)` holds the
+second elements. After converting the tuples to lists, you get the transpose of
 the matrix!
 
-## Generators and co-routines
+See [zip_demo_sol.py](zip_demo_sol.py) for a more code.
+
+## Generators and Co-routines
 
 ### Enumerate
 
@@ -482,8 +551,9 @@ value and returns it. We can use it like this:
 
 ```python
 counter = Counter()
-print(counter.next())
-print(counter.next())
+print(counter.next()) # 1
+print(counter.next()) # 2
+print(counter.next()) # 3
 ```
 
 Here's an iterator that iterates over the letters of a given string `s`:
@@ -512,8 +582,8 @@ print(letters.next()) # crashes!
 `Letters` is useful as long as there are more letters to iterate over. But when
 all the letters have returned, it crashes. And crashing is never a good thing! 
 
-Note that `Counter` doesn't crash because it has no end. It is an example of an
-**endless iterator**, or an **infinite iterator**.
+Note that `Counter` *doesn't* crash: it has no end. `Counter` is an example of
+an **endless iterator**, or an **infinite iterator**.
 
 To deal with iterators that are done (i.e. they have no more elements to
 return), Python uses the `StopIteration` exception. The idea is that if next is
@@ -555,11 +625,12 @@ it must have these two methods:
 - `__next__()` returns the next value from the iterator, raises `StopIteration`
 if there are no more values. Python calls it `__next__` instead of `next`
 since it is a Python convention to use double underscores for special methods.
+
 - `__iter__()` returns the iterator object itself. This usually just returns
 `self`, i.e. the object itself. But container objects, such as a list, have
 `__iter__` so that you can get an iterator object for the container.
 
-The idea is that calling `__iter_()` gets you an iterator object that is
+The idea is that calling `__iter__()` gets you an iterator object that is
 guaranteed to have a `__next__` method. 
 
 So lets update `Letters` to make it an official Python iterator:
@@ -585,9 +656,9 @@ We can still use this as before, using the  `__next__` method:
 
 ```python
 letters = Letters("cat")
-print(letters.__next__())
-print(letters.__next__())
-print(letters.__next__())
+print(letters.__next__()) # 'c'
+print(letters.__next__()) # 'a'
+print(letters.__next__()) # 't'
 print(letters.__next__()) # StopIteration exception
 ```
 
@@ -595,9 +666,9 @@ But now we can also use the `next` function, which is a little more readable:
 
 ```python
 letters = Letters("cat")
-print(next(letters))
-print(next(letters))
-print(next(letters))
+print(next(letters)) # 'c'
+print(next(letters)) # 'a'
+print(next(letters)) # 't'
 print(next(letters)) # StopIteration exception
 ```
 
@@ -624,8 +695,8 @@ Python already provides an iterator like `Letters` for strings. We can iterate
 directly over strings like this:
 
 ```python
-for letter in "cat":
-    print(letter)
+for c in "cat":
+    print(c)
 ```
 
 This works because Python strings implement the `__iter__` method, which returns
@@ -642,8 +713,8 @@ for c in it:
 But as we've seen, we can just write this:
 
 ```python
-for letter in "cat":
-    print(letter)
+for c in "cat":
+    print(c)
 ```
 
 This shows us something important: `for` works with an object that has
@@ -651,8 +722,8 @@ This shows us something important: `for` works with an object that has
 object, and then calls `__next__` on that iterator object to get the next
 values.
 
-In Python terminology, we say that strings are **iterable** (but *not*
-iterators). In general, any object that has a `__iter__` method is iterable. An
+In Python terminology, we say that strings are **iterable** (but they are *not*
+iterators). In general, any object that has an `__iter__` method is iterable. An
 iterator is any object that is both iterable (has an `__iter__` method) *and*
 has a `__next__` method.
 
@@ -671,8 +742,10 @@ class My_enumerate:
     
     def __next__(self):
         if self.index < len(self.lst):
+            i = self.index
+            value = self.lst[i]
             self.index += 1
-            return self.index, self.lst[self.index - 1]
+            return i, value
         else:
             raise StopIteration
 ```
@@ -1071,7 +1144,6 @@ inside another function to give it some extra behavior. For example, suppose we
 have this function to simulate doing laundry:
 
 ```python
-
 def do_laundry():
     import time
     print("Doing laundry ... ")
@@ -1400,6 +1472,18 @@ class Timer:
         print(f"Elapsed: {elapsed:.3f} seconds")
         return False  # False = don't suppress any exception; re-raise if one occurred
 ```
+
+The parameters to `__exit__` are used for handling exceptions that might occur
+in the block of code:
+
+- `exc_type`: the type of the exception that occurred, or `None` if no exception
+  occurred
+
+- `exc_val`: the value of the exception that occurred, or `None` if no exception
+  occurred
+
+- `exc_tb`: the traceback of the exception that occurred, or `None` if no
+  exception occurred
 
 ## The Match Statement
 
