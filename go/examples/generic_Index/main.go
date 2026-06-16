@@ -6,13 +6,11 @@ import "fmt"
 // Index returns the index of x in s, or -1 if not found. The first parameter is
 // a slice of type T, the second is a value of type T.
 //
-// T is any type that supports the comparable constraint, i.e. T supports == and
-// !=.
+// T is any type that supports the comparable constraint, i.e. T works with ==
+// and !=.
 //
 func Index[T comparable](s []T, x T) int {
 	for i, v := range s {
-		// v and x are type T, which has the comparable constraint, so we can
-		// use == here.
 		if v == x {
 			return i
 		}
@@ -23,9 +21,9 @@ func Index[T comparable](s []T, x T) int {
 func main() {
 	// Index works on a slice of ints
 	si := []int{10, 20, 15, -10}
-	fmt.Println(Index(si, 15))
+	fmt.Println("int slice Index: ", Index(si, 15))
 
 	// Index also works on a slice of strings
 	ss := []string{"foo", "bar", "baz"}
-	fmt.Println(Index(ss, "hello"))
+	fmt.Println("string slice Index: ", Index(ss, "hello"))
 }

@@ -22,7 +22,6 @@ func main() {
 	s := "  This is a test! "
 	title := makeTitle(s)
 	fmt.Println(title)
-
 }
 
 // to cut down on clutter, we create a new type that describes the signature of

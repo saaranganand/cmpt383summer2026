@@ -23,13 +23,13 @@ package main
 
 import "fmt"
 
-func add(x int, y int) int {
-	return x + y
-}
-
-// func add(x, y int) int {
+// func add(x int, y int) int {
 // 	return x + y
 // }
+
+func add(x, y int) int {
+	return x + y
+}
 
 func swap(x, y string) (string, string) {
 	return y, x
@@ -47,7 +47,8 @@ func main() {
 
 	a, b := "hello", "world"
 	fmt.Println("before swap:", a, b)
-	a, b = swap(a, b)
+	// a, b = swap(a, b)
+	a, b = b, a
 	fmt.Println("after swap:", a, b)
 
 	avg, diff := avg_diff(1.0, 2.0)

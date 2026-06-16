@@ -23,7 +23,7 @@ func main() {
 	// while the main thread is calculating the Fibonacci number.
 	go spinner(100 * time.Millisecond)
 
-	fibN := fib(n) // slow
+	fibN := fib(n) // slow!
 	fmt.Printf("\rFibonacci(%d) = %d\n", n, fibN)
 }
 

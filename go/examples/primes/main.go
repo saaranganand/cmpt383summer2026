@@ -5,21 +5,20 @@
 // generate prime numbers.
 //
 
-
 package main
 
 import "fmt"
 
 func main() {
     for i := 0; i <= 25; i++ {
-        fmt.Println(i, is_prime(i))
+        fmt.Println(i, IsPrime(i))
     }
 
-    fmt.Println(primes_less_than(10000)) // correct answer: 1229
+    fmt.Println(PrimesLessThan(10000))  // 1229
 }
 
 // Returns true if the integer n is prime, and false otherwise.
-func is_prime(n int) bool {
+func IsPrime(n int) bool {
     if n < 2 {
         return false
     } else if n == 2 {
@@ -39,9 +38,9 @@ func is_prime(n int) bool {
 }
 
 // Uses a named return parameter.
-func primes_less_than(n int) (result int) {
+func PrimesLessThan(n int) (result int) {
     for i := 2; i < n; i++ {
-        if is_prime(i) {
+        if IsPrime(i) {
             result++
         }
     }

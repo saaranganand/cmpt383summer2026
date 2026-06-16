@@ -23,6 +23,14 @@ func main() {
 	fmt.Printf("%v is %v years old.\n", name, age)
 }
 
+
+
+
+
+
+
+
+
 // func main() {
 // 	var name string = "Fred"
 // 	var age int = 42
@@ -30,9 +38,7 @@ func main() {
 // }
 
 // func main() {
-// 	var name string
-// 	name = "Fred"
-// 	var age int
-// 	age = 42
+// 	name := "Fred"
+// 	age := 42
 // 	fmt.Printf("%v is %v years old.\n", name, age)
 // }

@@ -4,6 +4,18 @@ package main
 
 import "fmt"
 
+//
+// The Counter interface represents and integer object that can be incremented,
+// read, and reset. 
+//
+// It does not care about the internal implementation of how this is done.
+//
+// Any type that has, at least, the three methods listed in the Counter
+// interface, is said to implement the Counter interface. Go automatically
+// infers this: you don't need to explicitly say that the type implements the
+// Counter interface.
+//
+
 type Counter interface {
 	incr(n int)    // increment the counter by n
 	getCount() int // the current value of the counter
@@ -12,6 +24,9 @@ type Counter interface {
 
 /////////////////////////////////////////////
 
+//
+// a counter with a name
+//
 type NamedCount struct {
 	name  string
 	count int
@@ -34,13 +49,23 @@ func (nc *NamedCount) reset() {
 	nc.count = 0
 }
 
+// returns the name of the counter (not part of the Counter interface)
+func (nc NamedCount) getName() string {
+	return nc.name
+}
+
 // implement the Stringer interface
 func (nc NamedCount) String() string {
 	return fmt.Sprintf("counter%v: %v", nc.name, nc.count)
 }
 
-// All we about the passed-in value c is that it implements the Counter
+//
+// All we know about the passed-in value c is that it implements the Counter
 // interface, and so the incr, getCount, and reset methods can be called on it.
+//
+// Notice we *cannot* call the getName method on c because it is not part of the
+// Counter interface.
+//
 func testCounter(c Counter) {
 	fmt.Println(c.getCount()) // 0
 	c.incr(1)
@@ -54,14 +79,18 @@ func testCounter(c Counter) {
 
 /////////////////////////////////////////////
 
+//
+// a counter that can be undone one level (i.e. can be reset to the previous
+// value)
+//
 type UndoableCounter struct {
 	count     int
 	prevCount int
 }
 
 func (uc *UndoableCounter) incr(n int) {
-	uc.count += n
 	uc.prevCount = uc.count
+	uc.count += n
 }
 
 func (uc *UndoableCounter) getCount() int {
@@ -78,6 +107,15 @@ func (uc *UndoableCounter) undo() {
 }
 
 /////////////////////////////////////////////
+
+//
+// This makes a new type that is different than int, although it has the same
+// internal implementation as an int.
+//
+// This is different than typedef in C/C++. typedef does not create a new type,
+// but rather creates an alias for a type. The alias is just another name for
+// the type, and the original type and its alias can be used interchangeably.
+//
 
 type BasicCount int
 

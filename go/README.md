@@ -1,5 +1,9 @@
 ## Go
 
+## Go Problem Set
+
+[Go problem set](Go_problemset.md)
+
 ## Reading
 
 For general help about Go, check out the [Go tutorial getting started
@@ -91,16 +95,17 @@ Some of the major features of Go are:
 Here are a variety of examples of Go programs. You should study them all to get
 a feel for the language.
 
-- [hello_world.go](examples/hello_world/main.go)
-- [hello_name.go](examples/hello_name/main.go)
-- [age.go](examples/age/main.go)
-- [count_up.go](examples/count_up/main.go) 
-- [count_down.go](examples/count_down/main.go)
-- [functions.go](examples/functions/main.go)
-- [if_statements.go](examples/if_statements/main.go)
-- [switch_statements.go](examples/switch_statements/main.go)
-- [primes.go](examples/primes/main.go)
-- [defer.go](examples/defer/main.go)
+- [hello_world/main.go](examples/hello_world/main.go)
+- [hello_name/main.go](examples/hello_name/main.go)
+- [age/main.go](examples/age/main.go)
+- [count_up/main.go](examples/count_up/main.go) 
+- [count_down/main.go](examples/count_down/main.go)
+- [functions/main.go](examples/functions/main.go)
+- [if_statements/main.go](examples/if_statements/main.go)
+- [switch_statements/main.go](examples/switch_statements/main.go)
+- [defer/main.go](examples/defer/main.go)
+- [primes/main.go](examples/primes/main.go)
+  - [primes_test/main.go](examples/primes/primes_test.go)
 
 ### Lecture 3, 4: Arrays, Slices, and Maps
 
@@ -121,31 +126,46 @@ slice is copied but the underlying array is not copied. It is possible to have
 two, or more, slices that point to the same underlying array, and it is up to
 the programmer to keep track of this.
 
-- [slices.go](examples/slices/main.go)
-- [bits.go](examples/bits/main.go)
-- [sort.go](examples/sort/main.go)
-- [wordcount.go](examples/wordcount/main.go)
-- [functionsAndClosures.go](examples/functionsAndClosures/main.go)
-- [compose.go](examples/compose/main.go)
+Slice examples:
+- [question5/main.go](examples/question5/main.go)
+  - one solution to Question 5 of [the Go problem set](Go_problemset.md)
+- [splitter/main.go](examples/splitter/main.go)
+  - a simple example of a tokenizer that splits a string into words
+- [slices/main.go](examples/slices/main.go)
+- [bits/main.go](examples/bits/main.go)
+  - generating bit strings
+- [sort/main.go](examples/sort/main.go)
+
+Map example (optional):
+- [wordcount/main.go](examples/wordcount/main.go)
+
+Function and closure examples:
+- [question3c_and_more/main.go](examples/question3c_and_more/main.go)
+- [compose/main.go](examples/compose/main.go)
 
 ### Lecture 5, 6: Types, Methods, and Interfaces
 
-- [point.go](examples/point/main.go)
-- Please see the notes in [interfaceDemo.md](interfaceDemo.md) and the
-  associated code in [interface_Counter.go](examples/interface_Counter/main.go)
-- [shapes.go](examples/shapes/main.go)
+[point/main.go](examples/point/main.go) shows how to implement an (x, y) point
+type, and to use the `Stringer` interface to print it.
+
+[shapes/main.go](examples/shapes/main.go) shows how to use interfaces to
+implement a generic function that works with any shape that you pass it.
+
+More examples are in these notes [interfaceDemo.md](interfaceDemo.md) and the
+associated code in [interface_Counter/main.go](examples/interface_Counter/main.go)
+
 
 ### Lecture 7: Generics and Concurrency
 
 Generics are a way to write code that can work with any type.
 
-- [generic_Index.go](examples/generic_Index/main.go)
-- [generic_stack.go](examples/generic_stack/main.go)
+- [generic_Index/main.go](examples/generic_Index/main.go)
+- [generic_stack/main.go](examples/generic_stack/main.go)
 
 Concurrent programming is one of Go's major strengths (perhaps *the* major
 strength). Concurrent programming lets you write programs that have multiple
 threads of control. This is a difficult topic to cover in even a couple of
 lectures, se we will only show a couple of basic examples.
 
-- [spinner.go](examples/spinner/main.go)
-- [gen.go](examples/gen/main.go)
+- [spinner/main.go](examples/spinner/main.go)
+- [gen/main.go](examples/gen/main.go)

@@ -68,6 +68,20 @@ b. Write a Go function called `min_and_max` that takes a slice of floating point
    fmt.Println(small, big) // prints 1.5 4.2
    ```
 
+c. Write a Go function called `makeIncrementer` that returns two functions, one
+   that increments a counter and one that returns the current value of the
+   counter. It should work like this:
+
+   ```go
+   inc, get := makeIncrementer()
+   fmt.Println(get()) // prints 0
+   inc()
+   fmt.Println(get()) // prints 1
+   inc()
+   inc()
+   fmt.Println(get()) // prints 3
+   ```
+
 ## Question 4
 
 What does `defer` do? What is it commonly useful for in practice? 
@@ -97,7 +111,7 @@ give clear descriptions of what each function does:
 - `clear(s)` (sets the elements of slice `s` to the zero value; length remains
   unchanged)
 
-## Question 6
+## Question 6 (Optional)
 
 Write a function called `countAll(words []string)` that takes a non-empty slice
 of strings as input, and returns a map of the counts of all the words in the

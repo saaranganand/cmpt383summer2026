@@ -14,5 +14,5 @@ import "fmt"
 
 func main() {
 	defer fmt.Println("All done!")
-	fmt.Println("Doing some work...")
+	defer fmt.Println("Doing some work...")
 }

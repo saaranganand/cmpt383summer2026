@@ -17,64 +17,73 @@ import "fmt"
 
 //////////////////////////////////////////////////////
 
-// An interface is a list of function headers. 
+//
+// An interface is a list of function signatures. No variables or code appears
+// in a Go interface.
+//
+// Intuitively, a value implements the Shaper interface if it has the three
+// methods listed in the interface (it can have other methods as well).
+//
 type Shaper interface {
-    name() string
-    area() float64
-    perimeter() float64
+	name() string
+	area() float64
+	perimeter() float64
 }
 
 //////////////////////////////////////////////////////
 
 type Rectangle struct {
-    width, height float64
+	width, height float64
 }
 
-// In a method, the first parameter is added before the name of the function.
+// In a method, the parameter before the name of the function is called the
+// receiver.
 func (r Rectangle) area() float64 {
-    return r.width * r.height
+	return r.width * r.height
 }
 
 func (r Rectangle) perimeter() float64 {
-    return 2*r.width + 2*r.height
+	return 2*(r.width + r.height)
 }
 
 func (r Rectangle) name() string {
-    return "Rectangle"
+	return "Rectangle"
 }
 
 //////////////////////////////////////////////////////
 
 type Circle struct {
-    radius float64
+	radius float64
 }
 
 func (c Circle) name() string {
-    return "Circle"
+	return "Circle"
 }
 
 func (c Circle) area() float64 {
-    return 3.14 * c.radius * c.radius
+	return 3.14 * c.radius * c.radius
 }
 
 func (c Circle) perimeter() float64 {
-    return 2 * 3.14 * c.radius
+	return 2 * 3.14 * c.radius
 }
 
 //////////////////////////////////////////////////////
 
-// This is a generic function that works with any shape that you pass it. It
-// can only call the methods defined in Shaper.
+//
+// This is a generic function that works with any shape that you pass it. It can
+// only call the methods defined in Shaper.
+//
 func printShapeStats(s Shaper) {
-    fmt.Printf("     %v area: %v\n", s.name(), s.area())
-    fmt.Printf("%v perimeter: %v\n\n", s.name(), s.perimeter())
+	fmt.Printf("     %v area: %v\n", s.name(), s.area())
+	fmt.Printf("%v perimeter: %v\n\n", s.name(), s.perimeter())
 }
 
 func main() {
-    box := Rectangle{width: 4, height: 1}
-    dot := Circle{3}
-    shapes := []Shaper{box, dot}
-    for _, s := range shapes {
-        printShapeStats(s)
-    }
+	box := Rectangle{width: 4, height: 1}
+	dot := Circle{3}
+	shapes := []Shaper{box, dot}
+	for _, s := range shapes {
+		printShapeStats(s)
+	}
 }

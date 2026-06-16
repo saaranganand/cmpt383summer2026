@@ -66,6 +66,7 @@ func main() {
 
 	fmt.Println("incAll(sl) ...")
 	incAll(sl)
+	
 	// sl is modified
 	for i, val := range sl {
 		fmt.Printf("sl[%v]: %v\n", i, val)
