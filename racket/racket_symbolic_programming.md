@@ -1,8 +1,8 @@
 # Symbolic Programming in Racket
 
-One of the original uses of [LISP] was for **symbolic programming**, i.e.
-programming with symbols and expressions. Still today it is a good tool for such
-problems, so lets look at some example.
+One of the original uses of [LISP] was for **symbolic programming**, doing
+algebra and logic. Still today it is a good tool for such problems, so lets look
+at some example.
 
 ## Propositional Logic Examples
 
@@ -12,7 +12,6 @@ and f))`. The symbols `t` and `f` stand for *true* and *false*, and, at least to
 start, we will not have any variables. We are *not* using the built-in [Racket]
 boolean values (`#t` and `#f`) since this is our own little language different
 from [Racket].
-
 
 ## Checking Valid Expressions
 

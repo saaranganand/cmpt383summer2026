@@ -197,11 +197,11 @@ We define [Racket] expression `e` to be a **sum-list** if:
 
 ## Filtering
 
-`(filter pred? lst)` makes a new list that contains just the elements of `lst`
+`(filter pred? lst)` returns a new list that contains just the elements of `lst`
 that satisfy `pred?`.
 
-`pred?` is a predicate function, which is a function that takes one input, and
-returns `#t` or `#f`.
+`pred?` is a **predicate function**, which is a function that takes one input,
+and returns `#t` or `#f`.
 
 For example:
 
@@ -240,14 +240,17 @@ this:
 
 ### Challenge: a filter function
 
-In your own words, briefly describe what this function does. What would be a
-better name for it than `f`?
+Using the `length` trick just shown, implement a function called `(count-pred
+pred? lst)` that returns the number of top-level elements in `lst` that satisfy
+`pred?`. For example:
 
 ```lisp
-(define (f lst)
-  (if (empty? lst) '()
-      (filter (lambda (x) (not (equal? x (first lst))))
-              (f (rest lst)))))
+> (count-pred even? '(1 2 3 4 5 6))
+3
+> (count-pred symbol? '(we have 4 kinds of 2 wheelers))
+5
+> (count-pred (lambda (x) (or (equal? x 'a) (equal? x 'b))) '(a c b b a d c a))
+5
 ```
 
 ## Folding
@@ -276,18 +279,23 @@ To understand how folding works, first look at these concrete folding functions:
 ```
 
 Their implementations all follow the same pattern that we will call
-`fold-right`:
+`fold-right`. For example, `(+ 2 5 3 1)` can be written in infix notation as $2
++ (5 + (3 + (1 + 0)))$. Or if we convert that to prefix notation, it becomes `(+
+  2 (+ 5 (+ 3 (+ 1 0))))`. This is exactly what `fold-right` does, except that
+  `+` is replaced by some given binary function `op`, and the initial 0 is
+  replaced by some given initial value `init` that makes sense for `op`.:
+
 
 ```lisp
-;; (f a (f b (f c init)))
-(define (fold-right f init lst)
+;; (op a (op b (op c init)))
+(define (fold-right op init lst)
   (if (empty? lst) 
       init
-      (f (first lst) 
-         (fold-right f init (rest lst)))))
+      (op (first lst) 
+         (fold-right op init (rest lst)))))
 ```
 
-`fold-right` can implement each of the functions from above:
+`fold-right` can implement each of the above functions in one line:
 
 ```lisp
 > (fold-right + 0 '(1 2 3 4))
@@ -300,13 +308,13 @@ Their implementations all follow the same pattern that we will call
 4
 ```
 
-The function `f` passed to `fold-right` takes two inputs, and it is helpful to call
-the first input `next` and the second input `accum`. The idea is that `next` is
-assigned each value of the list, one at a time, and `accum` is the
-*accumulation* of the results so far. Exactly how the values are accumulated
-depends on `f`.
+The function `op` passed to `fold-right` must take two inputs, and it is helpful
+to call the first input `next` and the second input `accum`. The idea is that
+`next` gets assigned each value of the list, one at a time, and `accum`
+*accumulates* the results. Exactly how the values are accumulated depends on
+`op`.
 
-`fold-right` is quite general. It can, for instance, implement `map`:
+`fold-right` is quite general. For instance, it can implement `map`:
 
 ```lisp
 (define (my-map2 f lst)
@@ -327,8 +335,8 @@ Using just one call to `fold-right`, implement the function `(my-filter pred? ls
 
 ## Folding consed-out lists
 
-Folds can be tricky to think about at first (and second, and third, ...). For
-example, what does `(fold-right cons '() '(a b c d))` evaluate to?
+Folds can be tricky to think about. For example, what does `(fold-right cons '()
+'(a b c d))` evaluate to?
 
 Here is a perspective that can help with right folds. Any list can be written in
 consed-out form, e.g. `'(a b c d)` is:
@@ -360,20 +368,19 @@ to `'(a b c d)`.
 
 `fold-right` is called a *right* fold because it processes the items in the list
 in *reverse* order, from the right end to the left end. For example,
-`(fold-right + 0 '(1 2 3))` is this: `(+ 1 (+ 2 (+ 3 0))`. In this expression,
-first `(+ 3 0)` is calculated, and then `(+ 2 3)` is calculated, and finally `(+
-1 5)`.
+`(fold-right + 0 '(1 2 3))` is this: `(+ 1 (+ 2 (+ 3 0))`. First `(+ 3 0)` is
+calculated, and then `(+ 2 3)` is calculated, and finally `(+ 1 5)`.
 
 For some expressions, that might not be the order you want, and so there is the
-`fold-left` function applies `f` from left to right. It is usually defined like
+`fold-left` function applies `op` from left to right. It is usually defined like
 this:
 
 ```lisp
-;; (f (f (f init a) b) c)
-(define (fold-left f init lst)
+;; (op (op (op init a) b) c)
+(define (fold-left op init lst)
   (if (empty? lst) 
       init
-      (fold-left f (f init (first lst)) (rest lst))))
+      (fold-left op (op init (first lst)) (rest lst))))
 ```
 
 A nice feature of `fold-left` is that it is **tail-recursive**, i.e. the last
@@ -388,9 +395,9 @@ same as our `foldr`, but `foldl` is not defined quite the same as
 
 ```lisp
 > (foldl show 'init '(a b c d))
-'(f d (f c (f b (f a init))))
+'(op d (op c (op b (op a init))))
 > (fold-left show 'init '(a b c d))
-'(f (f (f (f init a) b) c) d)
+'(op (op (op (op init a) b) c) d)
 ```
 
 ## Folding Example: deep-count re-visited
@@ -419,7 +426,7 @@ The function `deep-count` was written in previous notes:
 This implementation is straightforward. Its body is a `cond` that handles all
 the possible cases of items on a list (plus the special case of the empty list).
 
-A more functional way to implement this is to use `foldr` and `map`. The idea is
+A more functional way to implement this is with `foldr` and `map`. The idea is
 to replace each item on the list with how many numbers it contains. There are
 three kinds of items:
 
@@ -451,12 +458,31 @@ Here's the code:
 (define (deep-count-num lst)       
   (sum
    (map (lambda (x)
-          (cond [(list? x) (deep-count-num x)]
-                [(number? x) 1]
-                [else 0]
+          (cond [(list? x) 
+                 (deep-count-num x)]
+                [(number? x) 
+                 1]
+                [else 
+                 0]
                 ))
         lst)))
 ```
+
+Here's a similar implementation using a helper function that shows the essential
+idea more clearly:
+
+```lisp
+(define (bool->int b) (if b 1 0))
+
+(define (deep-count-num lst)       
+  (sum
+   (map (lambda (x)
+          (if (list? x) 
+              (deep-count-num x)
+              (bool->int (number? x))))
+        lst)))
+```
+
 
 Compared to the earlier `deep-count`:
 
@@ -491,10 +517,10 @@ structure of a fold. First, we define this function:
 
 ```lisp
 (define (show next acc)
-  (cons 'f (cons next (list acc))))
+  (cons 'op (cons next (list acc))))
   
 > (show 'a '(c d))
-'(f a (c d))
+'(op a (c d))
 ```
 
 By passing `show` to the various fold functions, we get a list showing the
@@ -502,9 +528,9 @@ order of evaluation. For example:
 
 ```lisp
 > (foldr show '() '(a b c))
-'(f a (f b (f c ())))
+'(op a (op b (op c ())))
 > (foldr show '() '(a b c))
-'(f a (f b (f c ())))
+'(op a (op b (op c ())))
 ```
 
 This shows that both our `foldr`, and the built-in [Racket] `foldr`
@@ -512,9 +538,9 @@ evaluate to the same thing. However, `fold-left` and `foldl` are different:
 
 ```lisp
 > (fold-left show '() '(a b c))
-'(f (f (f () a) b) c)
+'(op (op (op () a) b) c)
 > (foldl show '() '(a b c))
-'(f c (f b (f a ())))
+'(op c (op b (op a ())))
 ```
 
 This last expression suggests that `foldl` could be implemented like this:

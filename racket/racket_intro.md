@@ -33,10 +33,8 @@ his students.
   features like if-statements and definition environments, which are not usually
   implementable in other languages.
 
-While [Lisp] has never had major mainstream success, it has been a rich source
-of ideas, many of which have found their way into other languages, and so it is
-well worth learning.
-
+While [Lisp] hasn't had mainstream success, it has been a rich source of ideas,
+for other programming languages, and so it is well worth learning.
 
 ## Getting Racket
 
@@ -87,8 +85,8 @@ waiting for you to type something, e.g.:
 ## Using Racket's Interactive Interpreter
 
 [Racket]'s' interactive interpreter is sometimes called a **REPL**, which stands
-for **read-eval-print loop**. It lets you evaluate expressions one at a time:
-instance:
+for **read-eval-print loop**. It lets you evaluate expressions one at a time.
+For example:
 
 ```lisp
 > (+ 3 2)
@@ -103,7 +101,7 @@ instance:
 2 1/2       ;; 1/2 is written as a fraction in DrRacket
 ```
 
-An interactive REPL is a significant feature of most Lisp-like language. You
+An interactive REPL is a significant feature of most Lisp-like languages. You
 typically use it to test small examples, or to run only one part of your
 program.
 
@@ -116,52 +114,48 @@ You will see the following in [Racket] programs we write for this course:
   for rational numbers and complex numbers.
 
 - **Strings**, e.g. `"hello"`, `"world"`; strings are sequences of characters.
-  We will rarely use them in this course, since they are well-supported by other
-  languages.
+  We will rarely use them since they are well-supported by other languages.
 
-- **Boolean Values**, e.g. `#t`, `#f`; boolean values are either `#t` (true) or
-  `#f` (false). For example, `(= 2 3)` evaluates to `#f`, `(= 2 2)` evaluates to
-  `#t`, and `(not (= 2 3))` evaluates to `#t`.
+- **Boolean Values**, `#t` (for true), `#f` (for false); for example, `(= 2 3)`
+  evaluates to `#f`, `(= 2 2)` evaluates to `#t`, and `(not (= 2 3))` evaluates
+  to `#t`.
 
 - **Symbols**, e.g. `'a`, `'mustard`, `'color-of-first-shape`; symbols are
-  *like* strings, but are used quite differently. The `'` in front of a symbol
-  is called a **single-quote**, or **quote** for short, and is essential for
-  distinguishing symbols from variables, e.g. `x` is a variable, while `'x` is a
-  symbol.
-
-- **Lists**, e.g. `(1 2 3)`, `(a (b 5) c)`; lists are sequences of values. Lists
-  can contain values of any type, including other lists.
+  *like* strings, but are used quite differently. The `'` is called a
+  **single-quote**, or **quote** for short, and is essential for distinguishing
+  symbols from variables, e.g. `x` is a variable, while `'x` is a symbol.
 
 - **Quoted Lists**, e.g. `'(a b 1 (2 3) ())`; quoted lists are lists that are
-  not evaluated immediately. They are just data. For example, `(+ 2 3)` is a
-  function call that evaluates to 5, but `'(+ 2 3)` is just a list of three
-  values, and it evaluates to itself.
+  sequences of values. They are just data, and evaluate to themselves. For
+  example, `'(+ 2 3)` is a list of three values, and it evaluates to itself.
 
 - **Functions**, e.g. `(+ 3 2)` calls the function `+` with the arguments 3 and 2.
   Functions are called using **prefix** notation: the function is written first,
   followed by the arguments.
 
+  Important: `(+ 2 3)` is a function call that evaluates to 5, but `'(+ 2 3)` is
+  just a list that evaluates to itself.
+
 - **Special Forms**, e.g. `(define (x) 5)`, `(if (x) y z)`. Special forms are
-  similar to functions, but the arguments of a special form are not evaluated a
-  immediately. Special forms are used for definitions, conditionals, loops, and
-  things like that. In [Racket], special forms can be implemented using macros.
+  similar to functions, but the arguments are *not* evaluated immediately.
+  Special forms are used for things like definitions, if-statements, and loops.
+  In [Racket], special forms can be implemented using macros.
 
 
 ### Basic Arithmetic
 
-All [Racket] functions are called using **prefix** notation: the function is
-written first, followed by the arguments. For example, in [Racket] `(+ 3 2)`
-adds 3 and 2 together. 
+[Racket] functions use **prefix** notation: the function is written first,
+followed by the arguments. For example, in [Racket] `(+ 3 2)` adds 3 and 2
+together. 
 
 Expressions are written as **lists** delineated by **parentheses**: `(` marks
 the start of a list, and  `)` marks the end. We'll sometimes call these **round
 brackets**, or just **brackets** . 
 
 To help with readability, [Racket] lets you use **square brackets**, `[` and
-`]`,  in place of parentheses if you like. We'll see a few common examples of
-using them.
+`]`,  in place of parentheses if you like.
 
-Prefix notation lets you do things like this:
+Prefix notation lets you write expressions like this:
 
 ```lisp
 > (+ 3 2 4 5)
@@ -174,13 +168,15 @@ Prefix notation lets you do things like this:
 -4
 ```
 
-The order of operations is never ambiguous in prefix notation. To evaluate an
-infix expression like $1 + 2 \cdot 3$, you must follow the convention that
-multiplication is done *before* addition (e.g. [PEDMAS or
+A nice feature of prefix notation is that you don't need any special rules for
+the order of operations. For example, to evaluate the *infix* expression $1
++ 2 \cdot 3$, you need to know the special rule that multiplication is done
+*before* addition (e.g. [PEDMAS or
 BEDMAS](https://en.wikipedia.org/wiki/Order_of_operations#Mnemonics)). With
 infix notation, if you want to do addition first you need brackets, e.g. $(1 +
-2) \cdot 3$. However, with prefix notation, the order is always made explicit
-and so no operator precedence rules are needed:
+2) \cdot 3$. 
+
+However, with prefix notation, the order is always made explicit with brackets:
 
 ```lisp
 > (+ 1 (* 2 3))    ;; 1 + 2 * 3
@@ -189,8 +185,8 @@ and so no operator precedence rules are needed:
 9
 ```
 
-It can take some getting used to prefix notation, so here are a few more
-examples. To calculate $1^2+2^2+3^2$, you can do this:
+Prefix notation can take some getting used to, so here are a few more examples.
+To calculate $1^2+2^2+3^2$, you can do this:
 
 ```lisp
 > (+ (* 1 1) (* 2 2) (* 3 3))  ;; 1^2 + 2^2 + 3^2
@@ -276,18 +272,18 @@ one or more characters. For example, `'a`, `'x28`, `'hamster`, and
 ```
 
 Symbols look like strings, but they are intended to be used quite differently.
-You usually shouldn't need to access the individual characters they're made
-from. If you do, use a string instead.
+Symbols aren't meant to store text, but rather to be used as simple values. You
+usually shouldn't need to access the individual characters they're made from. If
+you do, use a string instead.
 
-> The functions `symbol->string` and `string->symbol` can be used to convert
-  between symbols and strings. They are not commonly used, but they can be
-  helpful if you want to, say, restrict the format of symbols. For example, some
-  functions might want to treat symbols that end with a `?` specially, and by
-  using `symbol->string` you can convert the symbol to a string and check if the
-  last character is a `?`.
+> [Racket] has functions `symbol->string` and `string->symbol` to convert
+  between symbols and strings. They can be helpful if you want to, say, restrict
+  the format of symbols. For example, some functions might want to treat symbols
+  that end with a `?` specially, and by using `symbol->string` you can convert
+  the symbol to a string and check if the last character is a `?`.
 
-The quote, `'`, in front of symbols is important because it distinguishes
-symbols from variables. For example, `x` is a variable, while `'x` is a symbol:
+A `'` in front of symbols is important because it means the symbol is data. For
+example, `x` is a variable, while `'x` is a symbol:
 
 ```lisp
 > (symbol? 'x)
@@ -310,7 +306,7 @@ Like numbers, symbols evaluate to themselves:
 'cat
 ```
 
-This contrasts with variables, which evaluate to the value they're bound to.
+In contrast, variables evaluate to the value they're bound to.
 
 ### Quoted Lists
 
@@ -339,9 +335,9 @@ If you don't put a `'` in front of the list, then it evaluates to 5:
 #f
 ```
 
-The unquoted expression `(+ 2 3)` is call to the function `+`. It's *code* that
-runs, and it evaluates to 5. `'(+ 2 3)` is just *data*, and it doesn't run. `'(+
-2 3)` is just a list of three values, and it evaluates to itself.
+The unquoted expression `(+ 2 3)` is a call to the function `+`. It's *code*
+that runs and evaluates to 5. But `'(+ 2 3)` is just *data*, and it doesn't run.
+`'(+ 2 3)` is just a list of three values, and it evaluates to itself.
 
 Another way of quoting expressions in [Racket] is to use `quote`:
 
@@ -388,32 +384,29 @@ and then check your answer in the [Racket] interpreter. Some are quite tricky!
 ## Calling Functions
 
 Expressions such as `(+ 2 3)` and `(symbol? '(+ 2 3))` are examples of
-**function calls**. In general, [Racket] function calls have the form `(fn arg1
-arg2 ... argn)`. The function *always* comes first in a function call, and then
-the arguments.
+**function calls**. [Racket] function calls have the form `(fn arg1 arg2 ...
+argn)`.
 
 Some functions, such as `+` and `*`, can take a varying number of arguments.
 Other functions, such as `symbol?` and `list?`, take a fixed number of arguments
 (both `symbol?` and `list?` take one argument).
 
-Since the function comes first in a function call list, an expression like `(2 3
-+)` is an *error* because 2 is not a function:
+Since the function comes first in a function call, the first value of a list
+needs to be either a function, or an expression that evaluate to a function.
+These are some examples of errors in evaluation:
 
 ```lisp
 > (2 3 +)
 . . application: not a procedure;
- expected a procedure that can be applied to arguments
-  given: 2
-  arguments...:
+
+> ((+ 2 3) 4)  ;; same as (5 4)
+. . application: not a procedure;
 ```
 
-[Racket]'s syntax for calling functions is consistent and simple, and some
-programmers come to like it once they get used to it. But a significant downside
-for many programmers is that arithmetic expressions are prefix instead of
-infix. Some programmers really dislike prefix arithmetic --- why give up all the
-work they did learning the rules of infix? Prefix arithmetic and list notation
-are often cited as significant reasons why LISP-like languages are not more
-popular.
+[Racket]'s function calling syntax is consistent and simple, and some
+programmers come to like it (once they get used to it!). But using prefix
+instead of infix is a significant downside for many programmers. Why give up all
+the work they did learning the rules of infix? 
 
 ## Simple Definitions
 
@@ -508,11 +501,11 @@ global variable, etc. --- is a side-effect of the function.
 
 If a function has no side effects, and always returns the same output for the
 same input, then it is called a **pure function**. Regular mathematical
-functions are pure functions, and it's often a good idea to make function pure
+functions are pure functions, and it's often a good idea to make functions pure
 if you can in your own programs.
 
-
 ## Source Code Comments in Racket
+
 There are a couple of ways of writing [Racket] source code comments:
 
 - `;` is a single-line comment: characters after `;` and to the end of the line
@@ -546,8 +539,7 @@ There are a couple of ways of writing [Racket] source code comments:
            (= n (length lst))))
    ```
 
-`#;` is quite handy in practice, and is a kind of commenting not found in most
-other languages.
+`#;` is quite handy in practice, and not found in most other languages.
 
 
 ## Conditionals: if, and, or, cond
@@ -622,7 +614,8 @@ to true, and `#f` otherwise. For example:
 Importantly, `and` uses **short-circuiting**: its inputs are evaluated in the
 order they're given (left to right), and after the first one evaluates to `#f`,
 the expression immediately returns `#f` without evaluating any more of the
-expressions.
+expressions. In contrast, in math and logic the order of evaluation doesn't
+matter, i.e. $p \land q$ and $q \land p$ are logically equivalent.
 
 For example, this function relies on the fact that `and` is short-circuited:
 
@@ -655,9 +648,9 @@ The `or` form is similar to `and`, and it evaluates logical "or": `(or <test1>
 ```
 
 `or` uses short-circuit evaluation: the tests are evaluated in order (from left
-to right), and soon as one evaluates to `#t` no further tests are evaluated and
-the entire expression evaluates to `#t`. For instance, this expression returns
-`#t` thanks to short-circuiting:
+to right), and as soon as one evaluates to `#t` no further tests are evaluated
+and the entire expression evaluates to `#t`. For instance, this expression
+returns `#t` thanks to short-circuiting:
 
 ```lisp
 > (or (= 2 2) (error "oops"))
@@ -671,9 +664,8 @@ Changing the order of evaluation changes the results:
 . . oops
 ```
 
-Finally, `cond` form is similar to if-else-if structures in other languages. It
-evaluates boolean expressions and returns the result of the first true
-expression. For example:
+Finally, the `cond` form is similar to if-else-if structures in other languages.
+For example:
 
 ```lisp
 (define (sign n)
@@ -845,10 +837,10 @@ body-expr)`.
 In this challenge, `f` and `g` are any functions that take a single number as
 input, and return a number. Implement the following two functions:
 
-1. `(make-abs f)` returns a new function that takes one number `x` as input and
-   returns the *absolute value* of `(f x)`.
+1. `(make-abs f)` returns a lambda function that takes one number `x` as input
+   and returns the *absolute value* of `(f x)`.
 
-2. `(make-max f g)` returns a new function that takes one number `x` as input
+2. `(make-max f g)` returns a lambda function that takes one number `x` as input
    and returns the *max* of `(f x)` and `(g x)`.
 
 For example:
@@ -868,7 +860,6 @@ For example:
 > (max-fg -10)
 100
 ```
-
 
 ## Local Bindings with let and let*
 

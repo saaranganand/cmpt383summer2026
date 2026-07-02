@@ -40,15 +40,10 @@ Since `list` is a function, it's useful when you want to evaluate expressions
 '(3 12 -1)
 ```
 
-The **empty list** is a list with 0 values, and is written as `'()`. Use `null?`
-or `empty?` to test if a list is empty:
+The **empty list** is a list with 0 values, and is written as `'()`. We'll use
+`empty?` to test if a list is empty:
 
 ```lisp
-> (null? '(1 2))
-#f
-> (null? '())
-#t
-
 > (empty? '(1 2))
 #f
 > (empty? '())
@@ -197,9 +192,7 @@ while `(first '(min max))` is the *symbol* `'min`.
 ```
 
 Values of  the form `(x . y)` are called **dotted pairs**, or just **pairs** for
-short.
-
-`pair?` tests if a value is a pair:
+short. `pair?` tests if a value is a pair:
 
 ```lisp
 > (pair? '(1 . 2))
@@ -217,9 +210,9 @@ short.
 A dotted pair is implemented in memory as a **cons cell**, a value with two
 pointers:
 
-![[consCell.png|200]]
+<img src="consCell.png" width="200" alt="cons cell diagram">
 
-Visual diagrams like this are called **cons cell diagrams**.
+Diagrams like this are called **cons cell diagrams**.
 
 The `car` and `cdr` functions access the elements in a pair. `(car p)` returns
 the *first* element, and `(cdr p)` returns the *second* element, e.g.:
@@ -248,7 +241,7 @@ Lists are nested pairs. Written as pairs, `'(3 4 5)` has this structure:
 
 In memory it looks like this:
 
-![[list123.png]]
+<img src="list123.png"  alt="list 123 diagram">
 
 It has the structure `'(3 . something)`, and so it's a pair.
 
@@ -266,16 +259,18 @@ is has the proper structure: `'(1 . (2 . ()))`.
 
 ### Garbage Collection
 
-`cons` creates a pair in [Racket], but how do you delete a pair that you don't
+`cons` *creates* a pair in [Racket], but how do you delete a pair that you don't
 want any more? The answer is you never need to manually delete pairs in
-[Racket]. [Racket] uses **garbage collection**, which means that it keeps track
-of which pairs are in use, and automatically deletes the ones that aren't.
+[Racket]. [Racket] uses automatic **garbage collection**, which means that it
+keeps track of which pairs are in use, and automatically deletes the ones that
+aren't.
 
 [Lisp] was one of the first languages to use garbage collection. While this
-makes managing memory much easier, it does take time. Many of the computers that
-[Lisp] ran on in the 50s, 60s, 70s, and 80s were quite slow, and garbage
-collection pauses could be noticeable and occur at random times. In practice,
-garbage collection was too slow to be practical.
+makes managing memory much easier, it happens while your program is running, and
+so can make your program run slower, even pause it. Many of the computers that
+[Lisp] ran on in the 50s-80s were quite slow, and garbage collection pauses
+could be noticeable and occur at random times. Garbage collection was too slow
+to be practical.
 
 But nowadays, computers are faster, and so garbage collection is far more
 common. For example, Python, JavaScript, C#, and Go all use garbage collection.
@@ -290,8 +285,7 @@ The built-in `length` function calculates the length of a list:
 ```
 
 Lists do *not* store their own length, so `length` runs in time proportional
-to the number items in the list, i.e. in linear time. Calculating the length
-of long list could take a while.
+to the number items in the list, i.e. in linear time.
 
 You can write your own version of `length` using recursion:
 
@@ -358,7 +352,7 @@ For example:
 ## Counting
 
 Using the `symbol?` function (which tests if an object is a symbol, such as
-`'cat`), we calculate the number of symbols in a list as follows:
+`'cat`), we ca calculate the number of symbols in a list as follows:
 
 ```lisp
 (define (count-sym1 lst)
@@ -381,16 +375,13 @@ We could write it more compactly like this:
          (count-sym2 (rest lst)))))
 ```
 
-This version makes it clear that that the only thing that differs in the two
-cases is whether we add a 1 or a 0.
-
 > Which do you like better, `count-sym1` or `count-sym2`? A nice feature of
 > `count-sym1` is that use a straightforward `cond` expression. `count-sym2` is
 > a little simpler, and certainly more clever. Some programmers find clever code
 > harder to understand than straightforward code. But opinions differ.
 
 Now suppose we want to count *numbers* in a list instead of symbols. We can
-modify  `count-sym1` to get this:
+modify  `count-sym1` to this:
 
 ```lisp
 (define (count-num lst)
@@ -400,9 +391,9 @@ modify  `count-sym1` to get this:
         [else (count-num (rest lst))]))
 ```
 
-There's only two differences between `count-num` and`count-sym1`: `number?` is
-used instead of `symbol?`, and each occurrence of `count-sym1` is changed to
-`count-num`. Everything else is the same.
+This is the same as `count-sym1`, except `number?` is used instead of `symbol?`,
+and each occurrence of `count-sym1` is now `count-num`. Everything else is the
+same.
 
 Lets write a general-purpose counting function whose input is a list and a
 **predicate**. A predicate is a function that takes one value as input and
@@ -417,8 +408,8 @@ returns either `#t` or `#f`:
 ```
 
 `pred?` names the passed-in predicate. [Racket] lets you use a `?` in a variable
-name, and a `?` at the end of a function is a source code convention that
-signals to the programmer that it returns `#t` or `#f`.
+name, and a `?` at the end of a function is a convention that signals to the
+programmer that it returns `#t` or `#f`.
 
 We can now count anything we have a predicate for:
 
@@ -438,9 +429,9 @@ We can now count anything we have a predicate for:
 We can re-write the previous functions using `count-fn1`:
 
 ```lisp
-(define (count-symbol lst) (count-fn symbol? lst)))
+(define (count-symbol lst) (count-fn symbol? lst))
 
-(define (count-number lst) (count-fn number? lst)))
+(define (count-number lst) (count-fn number? lst))
 ```
 
 We can also write it in this slightly more compact way:
@@ -543,9 +534,11 @@ You can implement your own version of `append` using recursion:
 ;; result as (append lst lst2).
 ;;
 (define (my-append lst1 lst2)
-  (cond [(empty? lst1) lst2]
-        [else (cons (first lst1)
-                    (my-append (rest lst1) lst2))]))
+  (cond [(empty? lst1) 
+         lst2]
+        [else 
+         (cons (first lst1)
+               (my-append (rest lst1) lst2))]))
 
 > (my-append '(1 2) '(3 4 5))
 '(1 2 3 4 5)
@@ -598,6 +591,22 @@ In the following examples, **top-level** means the elements of the list are
 > (replace 'cat 'dog '(the cat gave the cat a hug))
 '(the dog gave the dog a hug)
 ```
+
+It's interesting to consider this alternate implementation of `replace`:
+
+```lisp
+(define (replace old new lst)
+  (if (empty? lst)
+      '()
+      (cons (if (equal? old (first lst)) new (first lst))
+            (replace old new (rest lst)))))
+```
+
+It's a little simpler because it doesn't repeat the call to `replace` and it
+gets rid of the `cond`. However, it no longer reads in sequential order. You are
+required to remember that the `if` is *inside* the `cons` function, and so you
+must remember that. That forces you to mentally keep track of the order of the
+operations, which for some programmers makes it harder to read.
 
 ## Challenge: subsets
 
@@ -807,7 +816,7 @@ Here's an implementation of `flatten`:
         [(list? (first x))
            (append (my-flatten (first x))
                    (my-flatten (rest x)))]
-        [else 
+        [else ;; first element is not a list
            (cons (first x) 
                  (my-flatten (rest x)))]
 ))

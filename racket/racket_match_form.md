@@ -16,7 +16,6 @@ Please read [Matching](https://docs.racket-lang.org/guide/match.html) from the
 - binary expressions of the form `(x op y)`, e.g. `(1 + a)`, `(41 / 2)`, ....
   `x` and `y` are always numbers or symbols, and never other expressions.
 
-
 ## Checking Simple Expressions without match
 
 One way to check for simple infix expressions is to build a checking function
@@ -46,9 +45,8 @@ out of smaller helper functions:
 #f
 ```
 
-The helper function `nlist?` is quite useful here, and is how we distinguish
-between unary and binary expressions.
-
+`nlist?` is quite useful here, and is how we distinguish between unary and
+binary expressions.
 
 ## Matching Simple Expressions
 
@@ -56,7 +54,8 @@ Now lets use `match` to write the same function:
 
 ```lisp
 (define (is-basic-expr2? x)
-  (if (number? x) #t
+  (if (number? x) 
+       #t  ;; numbers are always basic expressions
       (match x       
         [(list op a)   (member op all-unary-ops)]
         [(list a op b) (member op all-bin-ops)]
@@ -81,12 +80,13 @@ if the pattern matches. This is similar to `cond`, but much more flexible.
 Notice that `_` (not `else`!) matches *anything*. We use it as a catch-all when
 none of the earlier patterns match.
 
+`(member x lst)` returns `#t` if `x` is an element of `lst`, and `#f` otherwise.
 
 ## Matching with Quasiquoting
 
-**Quasiquoting** often plays nicely with `match`. Quasiquoting is like regular
-quoting, but you use a backquote instead if a single quote, and you can unquote
-parts of the expression using a comma. For example:
+**Quasiquoting** often works well with `match`. Quasiquoting is like regular
+quoting, but you use a *backquote*, and you can *unquote* parts of the
+expression using a comma. For example:
 
 ```lisp
 > '(a (+ 1 2) c)   ;; quoted expression

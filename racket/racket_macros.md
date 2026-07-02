@@ -10,7 +10,7 @@ efficient and works well.
 But some [Racket] forms don't work this way. For instance, `define` isn't a
 function:
 
-```scheme
+```lisp
 (define (f a b)
     (* a (+ b 2)))
 ```
@@ -22,7 +22,7 @@ because `f` is undefined.
 Similarly, conditional operations, such as `if`, `cond`, `and`, and `or`, don't
 necessarily evaluate all their arguments. For example:
 
-```scheme
+```lisp
 (if (equal? code 1)
     (launch-missiles)
     (do-not-launch-missiles)
@@ -34,17 +34,17 @@ and `(do-not-launch-missiles)` would be evaluated.
 
 One last example: `let`-environments introduce new variables into a scope:
 
-```scheme
+```lisp
 (let ([a 1]
       [b 2])
    (+ a b))
 ```
 
 If `let` were a regular function, then `([a 1] [b 2])` would be evaluated, which
-would mostly likely cause an error since `a` and `b` are not defined.
+would be an error since `a` and `b` are not defined.
 
 These examples show that regular functions *can't* implement some of the forms
-we see in [Racket]. Many programmers are okay with that: most other languages
+we see in [Racket]. Many programmers are okay with this: most other languages
 don't let you create new kinds of if-statements, or new ways to define
 functions.
 
@@ -65,13 +65,13 @@ The following example is from [Macros and Languages in
 Racket](http://rmculpepper.github.io/malr/basic.html).
 
 Suppose we want to implement the form `(assert bool-expr)` that does *nothing*
-if `bool-expr` evaluates to `#t`, but, if `expr` is `#f`, prints an error
-message with the *unevaluated* `bool-expr` in it. Such a macro can be useful
-during program development.
+if `bool-expr` evaluates to `#t`, but, if `expr` evaluats to `#f`, prints an
+error message with the *unevaluated* `bool-expr` in it. Such a macro can be
+useful during program development.
 
 Implementing it as a [Racket] function doesn't work:
 
-```scheme
+```lisp
 (define (assert-bad expr)
     (when (not expr)
         (error 'assert "assertion fail: ~s" expr))
@@ -81,6 +81,10 @@ Implementing it as a [Racket] function doesn't work:
 . . assert: assertion fail: #f
 ```
 
+> The form `(when <test> <body>)` evaluates to `body` if `test` is `#t`, and
+> does nothing if `test` is `#f`. It's a kind of conditional form that only
+> evaluates to a useful value if `test` is `#t`.
+
 The problem is the error message in the second call: it prints `#f`, when
 instead what we want to see is the unevaluated expression `(= 1 2)`. But
 `assert-bad` can't possibly print `(= 1 2)` because it gets passed `#f`, the
@@ -88,7 +92,7 @@ value of  `(= 1 2)`.
 
 You could add a second parameter to get the right error message:
 
-```scheme
+```lisp
 (define (assert-also-bad expr quoted-expr)
     (when (not expr)
         (error 'assert "assertion fail: ~s" quoted-expr)))
@@ -103,7 +107,7 @@ improvement.
 
 A macro solves the problem:
 
-```scheme
+```lisp
 (define-syntax-rule (assert expr)
   (when (not expr)
     (error 'assert "assertion failed: ~s" (quote expr))))
@@ -120,7 +124,7 @@ which form of `expr` to use.
 Using the same idea, here's a macro for printing an expression and its
 evaluation:
 
-```scheme
+```lisp
 (define-syntax-rule (print-val expr)
   (printf "~a ==> ~a" (quote expr) expr))
 
@@ -144,7 +148,7 @@ questions to help beginning programmers evaluate [Racket] expressions.
 In the call `(print-val (+ 1 2))`, `(+ 1 2)` is *not* quoted. If it was, we'd
 get this:
 
-```scheme
+```lisp
 > (print-val '(+ 1 2))
 '(+ 1 2) ==> (+ 1 2)
 ```
@@ -152,7 +156,7 @@ get this:
 Here's one more example. This macro prints a message *before* evaluating an
 expression:
 
-```scheme
+```lisp
 (define-syntax-rule (noisy expr)
   (begin
     (printf "evaluating ~a ...\n" (quote expr))
@@ -172,7 +176,7 @@ To better understand macros, it's useful to trace how macros get called. For
 example, when we call `(assert (= 1 2))`, we can imagine that it gets *expanded*
 into this expression:
 
-```scheme
+```lisp
 (when (not (= 1 2))
   (error 'assert "assertion failed: ~s" (quote (= 1 2))))
 ```
@@ -194,7 +198,7 @@ Suppose we wanted to write our own `or` macro. For simplicity, lets restrict it
 to exactly two inputs ([Racket]s built-in `or` takes 0 or more inputs). Here's a
 first attempt:
 
-```scheme
+```lisp
 (define-syntax-rule (my-or-bad e1 e2)
   (if e1 e1 e2))
 ```
@@ -210,7 +214,7 @@ printing to the screen or opening a file).
 To fix this problem, we can use `let` to ensure that `e1` is evaluated only
 once:
 
-```scheme
+```lisp
 (define-syntax-rule (my-or e1 e2)
   (let ([x e1])
     (if x x e2)))
@@ -221,7 +225,7 @@ This works!
 What's interesting is that if you think about how this macro expands, you might
 think it ought to *fail* in some cases. Consider this:
 
-```scheme
+```lisp
 > (define x 5)       ;; global x
 > (my-or #f (= x 5))
 #t
@@ -229,7 +233,7 @@ think it ought to *fail* in some cases. Consider this:
 
 `(my-or #f (= x 5))` would seem to expand to this:
 
-```scheme
+```lisp
 (let ([x #f])
   (if x x (= x 5)))
 ```
@@ -237,12 +241,14 @@ think it ought to *fail* in some cases. Consider this:
 When this form is evaluated, each `x` in the `if` statement is replaced by `#f`,
 and so returns the same value as:
 
-```scheme
+```lisp
 (if #f #f (= #f 5))  ;; error!
 ```
 
 This returns the value of `(= #f 5)`, which is an error (`=` only works with
-numbers).
+numbers). This is an example of **variable capture**: the local `x` variable in
+`my-or` "captured" the passed-in variable `x` with the same name, and phenomenon
+that can cause subtle bugs in programs.
 
 So it seems `(my-or #f (= x 5))` *should* cause an error. But it doesn't: it
 *correctly* returns `#t`.
@@ -259,7 +265,7 @@ worry about variable name clashes.
 How does [Racket] get a new variable name that is not used anywhere else?
 Conceptually, you can imagine that [Racket] uses the built-in `gensym` function:
 
-```scheme
+```lisp
 > (gensym)
 'g12792
 
@@ -278,7 +284,7 @@ In C++, macros are *not* hygienic. Consider this example from [the Wikipedia
 article on hygienic macros](https://en.wikipedia.org/wiki/Hygienic_macro):
 
 ```cpp
-#define INCI(i) do { int a=0; ++i; } while(0)
+#define INCI(i) do { int a = 0; ++i; } while (0)
 
 int main(void)
 {

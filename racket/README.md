@@ -1,5 +1,9 @@
 # Racket Notes
 
+## Racket Problem Set
+
+The [Racket problem set](Racket_problemset.md).
+
 ## Installing Racket
 
 Please use the [DrRacket IDE](https://racket-lang.org/). We won't use the
@@ -7,8 +11,8 @@ command-line version.
 
 ## Coding Style
 
-Racket supports many different languages, and we will be using the core Racket
-language. To ensure this, put this line at the top of all your Racket source
+Racket supports many different languages, and we will be using only the core
+Racket language. You must put this line at the top of all your Racket source
 files:
 
 ```lisp
@@ -44,7 +48,7 @@ study after Racket), which does not allow loops or mutating functions.
 
 - [Maps, filters, and folds](racket_maps_filters_folds.md)
 
-### Lecture 5,6 Racket: Higher Order Functions
+### Lecture 5, 6 Racket: Higher Order Functions
 
 - [Higher order functions](racket_higher_order_functions.md)
 - [The Racket match form](racket_match_form.md)
@@ -52,5 +56,5 @@ study after Racket), which does not allow loops or mutating functions.
 ### Lecture 7 Racket: Symbolic Programming Examples
 - [Symbolic Programming in Racket](racket_symbolic_programming.md)
 
-### Optional: Macros
+### Lecture 8 Racket: Macros
 - [Racket macros](racket_macros.md)
