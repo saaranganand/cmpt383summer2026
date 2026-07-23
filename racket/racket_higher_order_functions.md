@@ -364,7 +364,7 @@ Now we can write `compose-all` as a right fold:
 ```lisp
 (define (compose-all . fns)
   (foldr comp
-         (lambda (x) x)   ; identity function
+         (lambda (x) x)   ;; identity function
          fns))
 ```
 

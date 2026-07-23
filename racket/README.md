@@ -56,5 +56,5 @@ study after Racket), which does not allow loops or mutating functions.
 ### Lecture 7 Racket: Symbolic Programming Examples
 - [Symbolic Programming in Racket](racket_symbolic_programming.md)
 
-### Lecture 8 Racket: Macros
+### Skipped: Lecture 8 Racket: Macros
 - [Racket macros](racket_macros.md)

@@ -12,7 +12,7 @@ Please post your answers to the discussion board to share with other students.
 support and try to figure them out yourself. Having AI or another student do
 this for you will not help you learn. You must do the learning yourself!
 
-## Question
+## Question 0
 
 Using recursion, implement a function called `(index-of x lst)` that returns the
 index location of the *first* occurrence of `x` in `lst`. The first index value

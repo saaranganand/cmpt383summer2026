@@ -103,7 +103,7 @@ With `match`, you can use quasiquoting to match parts of the expression:
   (or (number? x)
       (match x       
         [`(,op ,a)    (member op all-unary-ops)]
-        [`(,a ,op ,b) (member op all-unary-ops)]
+        [`(,a ,op ,b) (member op all-bin-ops)]
         [_            #f]
         )))
 ```

@@ -108,6 +108,7 @@
                (my-flatten (rest x)))]
         ))
 
+;; applies f to every member of lst
 (define (my-map f lst)
   (cond [(empty? lst)
          '()]
@@ -115,6 +116,7 @@
          (cons (f (first lst))
                (my-map f (rest lst)))]))
 
+;; returns a list of all the elements on lst that satisfy pred?
 (define (my-filter pred? lst)
   (cond [(empty? lst)
          '()]
@@ -123,4 +125,125 @@
                (my-filter pred? (rest lst)))]
         [else
          (my-filter pred? (rest lst))]))
-  
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(define (sum lst)
+  (if (empty? lst) 
+      0
+      (+ (first lst) (sum (rest lst)))))
+
+(define (prod lst)
+  (if (empty? lst) 
+      1
+      (* (first lst) (prod (rest lst)))))
+
+(define (my-length lst)
+  (if (empty? lst) 
+      0
+      (+ 1 (my-length (rest lst)))))
+
+
+;; (fold-right op init '(a b c)
+;; => (op a (op b (op c init)))
+(define (fold-right op init lst)
+  (if (empty? lst)
+      init
+      (op (first lst)
+          (fold-right op init (rest lst)))))
+
+                    
+(define (my-map2 f lst)
+  (fold-right (lambda (next acc)
+                (cons (f next) acc))
+              '()
+              lst))
+
+(define (f x) (append x (list 'f)))
+(define (g x) (append x (list 'g)))
+(define (h x) (append x (list 'h)))
+
+(define (comp f g)
+  (lambda (x)
+    (f (g x))))
+
+(define fg (comp f g))
+(define s (comp rest rest))
+(define t (comp first rest))
+
+
+(define (twice f)
+  (comp f f))
+
+(define garnish (twice (lambda (x) (cons 'cheese x))))
+
+
+(define (compose-n f n)
+    (if (= n 1)
+        f
+        (comp f (compose-n f (- n 1)))))
+
+(define triple-cherry 
+   (compose-n (lambda (lst) (cons 'cherry lst)) 3))
+
+(define (I x) x)
+
+(define (compose-all . fns)
+  (foldr comp
+         I   ;; identity function
+         fns))
+
+(define fgh (compose-all f g h))
+
+(define (pipeline . fns)
+  (apply compose-all (reverse fns)))
+
+(define d (pipeline
+           f
+           g
+           h
+           ))
+
+(define add_a
+  (lambda (x y)
+    (+ x y)))
+
+(define add_b
+  (lambda (x)
+    (lambda (y)
+      (+ x y))))
+
+(define (curry2 f)
+  (lambda (x)
+    (lambda (y)
+      (f x y))
+    ))
+
+(define keep-odds ((curry2 filter) odd?))
+
+(define cons_c (curry2 cons))
+
+;; f is a curried 2-arg function
+(define (uncurry2 f)
+  (lambda (x y)
+    ((f x) y)))
+
+#;(define (I x) x)
+
+;; M combinator
+(define (M x) (x x))
+
+;; K combinator
+(define (K x) (lambda (y) x))
+
+;; S combinator
+(define (S3 x y z)
+  ((x z) (y z)))
+
+(define S (curry S3)) ;; curry is a built-in function
+
+;; S, K, I form a basis for pure functions
+
+(define (I a) ((S K K) a))
+

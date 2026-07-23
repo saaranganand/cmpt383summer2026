@@ -77,6 +77,116 @@ For example:
   0.13574660633484162)
 ```
 
+## Mapping Example: deep-count re-visited
+
+The function `deep-count` was written in previous notes:
+
+```lisp
+;;
+;; Returns the number of numbers on lst, even numbers
+;; inside of lists:
+;;
+(define (deep-count-num lst)       
+  (cond [(empty? lst) 0]
+        [(list? (first lst))
+         (+ (deep-count-num (first lst)) 
+            (deep-count-num (rest lst)))]
+        [(number? (first lst))
+         (+ 1 (deep-count-num (rest lst)))]
+        [else
+         (deep-count-num (rest lst))]))
+
+> (deep-count-num '(a 9 (b 8 9) ((up (or 16 you)))))
+4
+```
+
+This implementation is straightforward. Its body is a `cond` that handles all
+the possible cases of items on a list (plus the special case of the empty list).
+
+A more functional way to implement this is with `foldr` and `map`. The idea is
+to replace each item on the list with how many numbers it contains. There are
+three kinds of items:
+
+- A number is replaced by a 1.
+
+- A list is replaced by the number of numbers it contains. This is calculated
+  using a recursive call.
+
+- Everything else is replaced by a 0.
+
+This gives us a list of numbers whose sum is the number of numbers in the
+list. For example:
+
+```lisp
+'(a 9 (b 8 9) ((up (or 16 you))))
+
+becomes
+
+'(0 1 2 1)
+```
+
+The sum of `'(0 1 2 1)'` is 4, which is the correct answer.
+
+Here's the code:
+
+```lisp
+(define (sum lst) (foldr + 0 lst))
+
+(define (deep-count-num lst)       
+  (sum
+   (map (lambda (x)
+          (cond [(list? x) 
+                 (deep-count-num x)]
+                [(number? x) 
+                 1]
+                [else 
+                 0]
+                ))
+        lst)))
+```
+
+Here's a similar implementation using a helper function that shows the essential
+idea more clearly:
+
+```lisp
+(define (bool->int b) (if b 1 0))
+
+(define (deep-count-num lst)       
+  (sum
+   (map (lambda (x)
+          (if (list? x) 
+              (deep-count-num x)
+              (bool->int (number? x))))
+        lst)))
+```
+
+
+Compared to the earlier `deep-count`:
+
+- We don't need to explicitly check for the empty list. `map` handles that for
+  us.
+
+- There's only one recursive call to `deep-count`.
+
+- There's no calls to `first` or `rest`. `map` takes care of the accounting
+  details of picking the items out of the list.
+
+- To understand it, you need to know what `foldr`, `map`, and `lambda` do.
+
+Which implementation do you prefer?
+
+
+## Challenge: deep sum
+
+Implement a function `(deep-sum lst)` that works like `deep-count`, except
+instead of returning the number of numbers in `lst` it returns their sum. For
+example:
+
+```lisp
+> (deep-sum '(9 (b 8 9) ((up (or 16 you)))))
+42
+```
+
 ## Variations of map
 
 Two useful variations of `map` are `andmap` and `ormap`. Both take a **predicate
@@ -281,10 +391,9 @@ To understand how folding works, first look at these concrete folding functions:
 Their implementations all follow the same pattern that we will call
 `fold-right`. For example, `(+ 2 5 3 1)` can be written in infix notation as $2
 + (5 + (3 + (1 + 0)))$. Or if we convert that to prefix notation, it becomes `(+
-  2 (+ 5 (+ 3 (+ 1 0))))`. This is exactly what `fold-right` does, except that
-  `+` is replaced by some given binary function `op`, and the initial 0 is
-  replaced by some given initial value `init` that makes sense for `op`.:
-
+2 (+ 5 (+ 3 (+ 1 0))))`. This is exactly what `fold-right` does, except that `+`
+is replaced by some given binary function `op`, and the initial 0 is replaced by
+some given initial value `init` that makes sense for `op`:
 
 ```lisp
 ;; (op a (op b (op c init)))
@@ -346,15 +455,15 @@ consed-out form, e.g. `'(a b c d)` is:
 '(a b c d)
 ```
 
-You can think of `(fold-right f init '(a b c d))` as *replacing* `cons` with `f`
+You can think of `(fold-right op init '(a b c d))` as *replacing* `cons` with `op`
 and `'()` with `init` in the consed-out list:
 
 ```lisp
-(fold-right f init '(a b c d))
+(fold-right op init '(a b c d))
 
 ;; is the same as
 
-(f 'a (f 'b (f 'c (f 'd init))))
+(op 'a (op 'b (op 'c (op 'd init))))
 ```
 
 For example, `(fold-right + 0 '(1 2 3))` evaluates this expression:
@@ -398,116 +507,6 @@ same as our `foldr`, but `foldl` is not defined quite the same as
 '(op d (op c (op b (op a init))))
 > (fold-left show 'init '(a b c d))
 '(op (op (op (op init a) b) c) d)
-```
-
-## Folding Example: deep-count re-visited
-
-The function `deep-count` was written in previous notes:
-
-```lisp
-;;
-;; Returns the number of numbers on lst, even numbers
-;; inside of lists:
-;;
-(define (deep-count-num lst)       
-  (cond [(empty? lst) 0]
-        [(list? (first lst))
-         (+ (deep-count-num (first lst)) 
-            (deep-count-num (rest lst)))]
-        [(number? (first lst))
-         (+ 1 (deep-count-num (rest lst)))]
-        [else
-         (deep-count-num (rest lst))]))
-
-> (deep-count-num '(a 9 (b 8 9) ((up (or 16 you)))))
-4
-```
-
-This implementation is straightforward. Its body is a `cond` that handles all
-the possible cases of items on a list (plus the special case of the empty list).
-
-A more functional way to implement this is with `foldr` and `map`. The idea is
-to replace each item on the list with how many numbers it contains. There are
-three kinds of items:
-
-- A number is replaced by a 1.
-
-- A list is replaced by the number of numbers it contains. This is calculated
-  using a recursive call.
-
-- Everything else is replaced by a 0.
-
-This gives us a list of numbers whose sum is the number of numbers in the
-list. For example:
-
-```lisp
-'(a 9 (b 8 9) ((up (or 16 you))))
-
-becomes
-
-'(0 1 2 1)
-```
-
-The sum of `'(0 1 2 1)'` is 4, which is the correct answer.
-
-Here's the code:
-
-```lisp
-(define (sum lst) (foldr + 0 lst))
-
-(define (deep-count-num lst)       
-  (sum
-   (map (lambda (x)
-          (cond [(list? x) 
-                 (deep-count-num x)]
-                [(number? x) 
-                 1]
-                [else 
-                 0]
-                ))
-        lst)))
-```
-
-Here's a similar implementation using a helper function that shows the essential
-idea more clearly:
-
-```lisp
-(define (bool->int b) (if b 1 0))
-
-(define (deep-count-num lst)       
-  (sum
-   (map (lambda (x)
-          (if (list? x) 
-              (deep-count-num x)
-              (bool->int (number? x))))
-        lst)))
-```
-
-
-Compared to the earlier `deep-count`:
-
-- We don't need to explicitly check for the empty list. `map` handles that for
-  us.
-
-- There's only one recursive call to `deep-count`.
-
-- There's no calls to `first` or `rest`. `map` takes care of the accounting
-  details of picking the items out of the list.
-
-- To understand it, you need to know what `foldr`, `map`, and `lambda` do.
-
-Which implementation do you prefer?
-
-
-## Challenge: deep sum
-
-Implement a function `(deep-sum lst)` that works like `deep-count`, except
-instead of returning the number of numbers in `lst` it returns their sum. For
-example:
-
-```lisp
-> (deep-sum '(9 (b 8 9) ((up (or 16 you)))))
-42
 ```
 
 ## Folding Example: The Structure of Folds
