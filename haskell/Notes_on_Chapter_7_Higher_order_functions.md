@@ -41,7 +41,7 @@ like this:
 
 ```haskell
 makeAdder' :: Int -> Int -> Int
-makeAdder' n = (+n)
+makeAdder' n = (+) n
 
 > plus5 = makeAdder' 5
 > plus5 23
@@ -338,9 +338,9 @@ It's instructive to trace out a calculation with `mysum` step-by-step:
 
 ```haskell
 mysum [4,1,2]
-= 4 + sum [1,2]
-= 4 + (1 + sum [2])
-= 4 + (1 + (2 + sum []))
+= 4 + mysum [1,2]
+= 4 + (1 + mysum [2])
+= 4 + (1 + (2 + mysum []))
 = 4 + (1 + (2 + 0))
 = 4 + (1 + 2)
 = 4 + 3
@@ -481,6 +481,7 @@ replaced by `[]` --- so there is no change. In other words, `myfoldr (:) []
 [2,1,3,4]` evaluates to `[2,1,3,4]`.
 
 ### Mapping a list with foldr
+
 `foldr` can implement the standard `map` function. A way to figure this out is
 to look at a concrete example. For the list `[1,2,3]`, a right fold looks like
 this:
@@ -506,6 +507,7 @@ mymap2 f xs = myfoldr op [] xs
 ```
 
 ### Reversing a list with foldr
+
 The standard list reverse function can implemented as a right fold.
 
 As with `map`, it helps to look at a concrete example. For the list `[1,2,3]`, a
@@ -537,6 +539,7 @@ myrev xs = myfoldr op [] xs
 ```
 
 ### Filtering a list with foldr
+
 The expression `filter even [1,2,3]` returns `[2]`, i.e. all the elements on
 `[1,2,3]` that are even.
 
@@ -562,6 +565,7 @@ myfilter2 p xs = myfoldr op [] xs
 ```
 
 ## The `foldl` function
+
 A **left fold** evaluates an expression from left to right. For example, the sum
 of the list `[1,2,3]` can be represented as the left folded expression
 `((0+1)+2)+3`, or `foldl (+) 0 [1,2,3]`. 
@@ -616,8 +620,9 @@ thing it does is recursively evaluate the rest of the list, and for an infinite
 list this will go on forever.
 
 ## The composition operator
+
 **Function composition** is a basic mathematical operation. For example, if
-$f(n)=n^2$ and $g(n)=3n+1$,  then $f(g(n))=f(3n+1)=(3n+1)^2$. In mathematics, $f
+$f(n)=n^2$ and $g(n)=3n+1$, then $f(g(n))=f(3n+1)=(3n+1)^2$. In mathematics, $f
 \circ g$ is called the **composition** of $f$ and $g$, and we can write $(f
 \circ g)(n)=(3n+1)^2$. $f \circ g$ is a new function that combines $f$ and $g$.
 If we want to give this new function a name, we could write $h = f \circ g$. 
@@ -750,6 +755,7 @@ For any function `f`, both `f . id` and `id . f` are equivalent to `f`. For
 $1\cdot n=n\cdot 1=n$).
 
 ### Challenge: counting values point free
+
 Write a function called `count p lst` that returns the number of elements in
 `lst` that satisfy predicate `p`. For example:
 

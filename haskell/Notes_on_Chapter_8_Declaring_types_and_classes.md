@@ -1,7 +1,8 @@
 Haskell has extensive support for types, and allows programmers to create new
-types in a number of ways.
+types in a number of usefulways.
 
 ## Type declarations
+
 A **type declaration** uses the `type` keyword, and creates a *synonym* for an
 existing type. For example, the Haskell prelude has this type declaration:
 
@@ -9,17 +10,21 @@ existing type. For example, the Haskell prelude has this type declaration:
 type String = [Char]
 ```
 
-It says that the type `String` is just another name for a list of characters.
-The types `String` and `[Char]` can be used interchangeably.
+This says `String` is just another name for a list of characters. The types
+`String` and `[Char]` can be used interchangeably.
 
 > **Comparison** Type declarations like this are similar to `typedef` statements
 > in C/C++.
 
-Here's another example:
+Here's another example, this time using a type variable:
 
 ```haskell
 type Predicate a = a -> Bool
 ```
+
+Here, `a` is a type variable that can be any type. For instance, `Predicate Int`
+is the type of a function that takes an `Int` and returns a `Bool`, e.g. a
+function with the signature `Int -> Bool`.
 
 Using `Predicate a` in a type signature can improve readability:
 
@@ -33,14 +38,22 @@ remove_if p lst = filter (not . p) lst
 [1,3,5,7,9]
 ```
 
-Type declarations with `type` *cannot* be recursive. For example, this type is
-*not* allowed:
+Note the use of composition on the expression `not . p`. This is equivalent to
+the function application `not (p x)`, where `x` is any value of type `a`. Using
+the composition operator `.` lets us write it in the briefer form `not . p`,
+which can be read as "the negation of predicate `p`". Using composition in this
+way is a common pattern in Haskell.
+
+Finally, we note that type declarations using `type` *cannot* be *recursive*,
+the type being defined with `type` cannot refer to itself. For example, this
+type is *not* allowed:
 
 ```haskell
 type Tree = (Int, [Tree]) -- Error! Recursion not allowed here
 ```
 
 ## Data declarations
+
 **Data declarations** create completely new types, as opposed to just synonyms
 for existing types. For example, the `Bool` type in the standard prelude is
 defined like this:
@@ -50,7 +63,8 @@ data Bool = True | False
 ```
 
 This defines a new type named `Bool`, and says that it has exactly two values,
-`True` and `False`.
+`True` and `False`. The `|` can be read "or", and so a `Bool` value is either
+`True` or `False`.
 
 > **Comparison** Data declarations in Haskell are similar to enumeration types
 > in languages like C++ or Java, but with stronger type guarantees.
@@ -63,12 +77,11 @@ data Light = Red | Yellow | Green
 ```
 
 The three values of `Light` are `Red`, `Yellow`, and `Green`. They are called
-**constructors** for the type. The `|` can be read "or", and so a `Light` value
-is either red, yellow, or green.
+**constructors** for the type.
 
 > **Careful** The term *constructor* is also used in object-oriented programming
-> (OOP) for a method that creates a new object. While the general idea is the
-> same, i.e. both Haskell and OOP constructors create new values, the details
+> (OOP) for a method that creates a new object. While the idea is conceptually
+> similar, i.e. both Haskell and OOP constructors create new values, the details
 > are quite different. You should *not* think of Haskell data declarations as
 > OOP.
 
@@ -133,7 +146,7 @@ Circle :: Float -> Shape
 Rect :: Float -> Float -> Shape
 ```
 
-Here are functions for calculating the area and perimeter of a shape:
+You can write functions to calculate the area and perimeter of shapes:
 
 ```haskell
 area :: Shape -> Float
@@ -155,14 +168,14 @@ perimeter (Rect w h) = 2 * (w + h)
 ```
 
 > **Comparison** In an object-oriented programming language like C++ or Java,
-> you might implement similar code by creating separate `Circle` and `Rect`
-> classes that inherit from a `Shape` base class. Haskell is different: there is
-> no inheritance happening here.
+> you might implement similar code by creating `Circle` and `Rect` classes that
+> inherit from a `Shape` base class. Haskell is different: there is no
+> inheritance happening here.
 
 ## Parameterized Data Declarations
+
 Haskell also lets you create **parameterized data declarations** that take one
-or more type variables.  For example, the type `Maybe a` is in the standard
-prelude:
+or more type variables. For example, the type `Maybe a` is this:
 
 ```haskell
 data Maybe a = Nothing | Just a
@@ -170,10 +183,17 @@ data Maybe a = Nothing | Just a
 
 `a` is any type, and `Maybe a` has two values: `Nothing`, and `Just a`. You
 could think of `Maybe a` as a box that is either empty, or it contains a value
-of type `a`. This can be useful in situations where you are not sure if a
-function will always return a value. 
+of type `a`. 
 
-For instance:
+`Maybe` can be useful as a way to deal with errors. For example, the standard
+Haskell `head` functions causes an error if you give it an empty list:
+
+```haskell
+> head []
+```
+
+Using `Maybe`, we can handle the empty list in a way that does not cause an
+error. For instance:
 
 ```haskell
 safeHead :: [a] -> Maybe a
@@ -189,18 +209,16 @@ Nothing
 ```
 
 `safeHead` *might* return a value of type `a`, or it might not. But it always
-returns some value, and so it doesn't crash on `[]` the way the standard `head`
-does:
+returns some value, and so it doesn't crash on `[]` like standard `head`.
 
 ```haskell
-> head []
-*** Exception: Prelude.head: empty list
 > safeHead []
 Nothing
+> head []
+*** Exception: Prelude.head: empty list
 ```
 
-Here's another example. The standard `minimum` function returns the smallest
-value in a list, but crashes on an empty list:
+The standard `minimum` function also crashes on an empty list:
 
 ```haskell
 > minimum [8,2,5,1,0]
@@ -209,7 +227,7 @@ value in a list, but crashes on an empty list:
 *** Exception: Prelude.minimum: empty list
 ```
 
-We can create a version that works for the empty list like this:
+So we could create a `safeMin` function like this:
 
 ```haskell
 safeMin :: Ord a => [a] -> Maybe a
@@ -226,6 +244,7 @@ Just 0
 empty, then `Nothing` is returned.
 
 ### Challenge: Safe Inversion
+
 Write a function `safeInvert :: Double -> Maybe Double` that returns the inverse
 of a number, except for 0 `Nothing` is returned:
 
@@ -237,8 +256,12 @@ Nothing
 ```
 
 ### Arithmetic with Maybe Numbers
-Suppose you want to add two `Maybe Double`s together. One way to do it is to
-return a `Double`:
+
+Dealing with `Maybe` values can be tricky, and you need to write code that says
+what to do in different cases.
+
+For example, suppose you want to add two `Maybe Double`s together. One way to do
+it is to return a `Double`:
 
 ```haskell
 add1 :: Maybe Double -> Maybe Double -> Double
@@ -254,10 +277,10 @@ add1 (Just m) (Just n) = m + n
 > add1 Nothing Nothing
 ```
 
-By returning a `Double`, we have to decide what number to convert `Nothing` to.
-0 seems like a reasonable choice, since `Nothing` is indeed nothing. 
+This treats `Nothing` as 0, which in some applications might be a reasonable
+choice, since `Nothing` is indeed nothing.
 
-In some cases, it might make more sense for `Nothing` values to remain as
+But in other cases, it might make more sense for `Nothing` values to remain as
 `Nothing`. To make that work you need to return a `Maybe Double`:
 
 ```haskell
@@ -276,8 +299,13 @@ Nothing
 Whether `add1` or `add2` --- or some other add-like function --- is better
 depends on the situation.
 
+> The code for `add` and `add2` is repetitive and a bit tedious, i.e. it just
+> lists all cases one by one. Haskell does provide a number of ways to write
+> this sort of code more concisely, but we will not cover them here.
+
 ## Recursive types
-Data declarations can be recursive. For example:
+
+Data declarations can be *recursive*. For example:
 
 ```haskell
 data Nat = Zero | Succ Nat
@@ -286,10 +314,11 @@ data Nat = Zero | Succ Nat
 
 `Nat` is a standard mathematical definition of a natural number. A natural
 number is either `Zero`, or the *successor* of a natural number. The values of
-`Nat` are `Zero`, `Succ Zero`, `Succ (Succ Zero)`, .... 
+`Nat` are `Zero`, `Succ Zero`, `Succ (Succ Zero)`, ....  `Zero` is 0, `Succ
+Zero` is 1, `Succ (Succ Zero)` is 2, etc.
 
 The number of calls to `Succ` corresponds to the natural number, and so we can
-write functions that convert `Nat`s to and from `Int`s:
+convert `Nat`s to and from `Int`s:
 
 ```haskell
 nat2int :: Nat -> Int
@@ -309,6 +338,7 @@ Succ (Succ (Succ (Succ (Succ Zero))))
 ```
 
 ### Explain the bug: Nat successor
+
 In your own words, explain the bug in this code, and how you would fix it (i.e.
 re-write the code so it works):
 
@@ -319,6 +349,7 @@ nat2int_bad n    = 1 + nat2int_bad n
 ```
 
 ### The List Type
+
 An interesting recursive type is `List a`:
 
 ```haskell
@@ -335,7 +366,7 @@ the rest of a list.
 > one of the first languages to make extensive used of linked lists, and it
 > called the list nodes **cons cells**.
 
-Here are some functions that operator on `List a`:
+Here are some functions that operate on `List a`:
 
 ```haskell
 first :: List a -> a
@@ -406,6 +437,7 @@ list2hlist = foldright (:) []
 ```
 
 ## Example: Tautology checker
+
 The example given in the text shows how a data declaration can help make a
 "little language", in this case for propositional logic. Many functions for
 processing it mirror the structure the data declaration.
@@ -427,7 +459,9 @@ Note that this version of `bools` has a different signature than the one given
 in the textbook.
 
 ### Explain the bug: Nat successor
-In your own words, explain the bug in this code, and how you would fix it (i.e. re-write the code so it works):
+
+In your own words, explain the bug in this code, and how you would fix it (i.e.
+re-write the code so it works):
 
 ```haskell
 bools_bug :: Int -> [String]
@@ -441,6 +475,7 @@ The function is *intended* to return a list of all bit strings of length n, e.g.
 "100","101","110","111"]`.
 
 ### Challenge: modified bit strings
+
 Modify `bools2` so that `bools2 0` returns the empty list `[]`, and for all
 other values of `n` `bools2 n` returns the same result as `bools n`:
 

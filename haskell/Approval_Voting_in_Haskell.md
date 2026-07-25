@@ -1,5 +1,7 @@
 ## Overview of Approval Voting
-In [approval voting](https://en.wikipedia.org/wiki/Approval_voting), a voters fill in ballots that look like this:
+
+In [approval voting](https://en.wikipedia.org/wiki/Approval_voting), a voters
+fill in ballots that look like this:
 
 ```
 Ballot 1: A, B, D
@@ -34,6 +36,7 @@ D: 3
 The winner is B, with 4 votes.
 
 ## Representing Ballots
+
 To do approval voting in Haskell, lets first think about how to represent a
 single ballot. Assuming the candidates can be represented by a single character,
 each ballot can be a list of characters, i.e. a string:
@@ -65,6 +68,7 @@ This is a convenient input format for a Haskell function, and so it's what we'll
 use. Will refer to this list as the `ballots`.
 
 ## The Top-level Organization
+
 Now lets think about how to process `ballots` to get the correct counts. The
 general steps seem to be:
 
@@ -81,6 +85,7 @@ general steps seem to be:
   ```
 
 ## Helper Functions
+
 This seems like a reasonable overall strategy. One of the thing's we'll need is
 a function that removes duplicate values from a list, so we can use this:
 
@@ -104,17 +109,14 @@ removeDups lst = foldr (\x acc -> if elem x acc
 ```
 
 
-You could also delete `lst`, in which case the function would be in **point-free
-style**:
+If you don't write the argument `lst`, the function is in **point-free style**:
 
 ```haskell
-
 removeDups :: Eq a => [a] -> [a]
 removeDups = foldr (\x acc -> if elem x acc
                               then acc
                               else x : acc
                    ) []
-
 ```
 
 We'll also need a sorting function. We could use insertion sort:
