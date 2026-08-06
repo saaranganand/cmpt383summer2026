@@ -7,21 +7,29 @@ and Kristina Striegnitz](https://lpn.swi-prolog.org/lpnpage.php?pageid=online).
 
 [Here is the Prolog problem set](prolog_questions.md).
 
-## Basic Prolog
+## Introduction to Prolog
 
-Prolog is a programming language inspired by research in logic programming. It
-has good symbol-manipulation capabilities, supports automatic backtracking, and
-can be thought of as a database that can store both facts and rules. In the
-1970s and 80s, it was a popular language for AI research based on logic, and
-still is a good choice for rule-based systems.
+**Prolog** is a programming language inspired by research in logic programming
+(an approach to programming based on formal logic). Prolog can be thought of as
+a language whose programs are collections of facts and rules that can be queried
+(similar to a database). Prolog can be a good choice for so-called **rule-based
+systems**, such as **expert systems**, where the program is a collection of
+facts and rules that can be queried.
+
+In the 1970s and 80s, it was a popular language for logic-based AI research
+based on logic. It has good symbol and list manipulation capabilities, supports
+automatic backtracking, and even has a special syntax for formal grammars. 
+
+## Basic Prolog
 
 A Prolog program consists of three main things: **facts**, **rules**, and
 **queries**. Facts and rules are stored in a **knowledge base** that can be
-queried. 
+queried. Queries can appear in a program, or be entered interactively at the
+Prolog prompt.
 
 ### Facts
 
-For example, here is a knowledge base:
+For example, here is a knowledge base consisting of four facts:
 
 ```prolog
 dog(rover).     % fact 1: rover is a dog
@@ -30,31 +38,33 @@ cat(whiskers).  % fact 3: whiskers is a cat
 cat(mittens).   % fact 4: mittens is a cat
 ```
 
-This knowledge base consists of four facts: `dog(rover)`, `dog(fido)`,
-`cat(whiskers)`, and `cat(mittens)`. Note the use of the dot (`.`) to indicate
-the end of a fact.
+Note the use of the dot (`.`) to indicate the end of a fact.
 
-Now we can query the knowledge base. For example, we can ask if `rover` is a
-`dog`:
+Now we can query the knowledge base, i.e. ask Prolog to check if a fact is true.
+For example, we can ask if `rover` is a `dog`:
 
 ```prolog
 ?- dog(rover).
 true.
 ```
 
-The answer is `true`, because `rover` is indeed a dog in our knowledge base. We
-can also ask if `spot` is a `dog`:
+`?-` is the Prolog interpreter prompt, and what comes after is the query typed
+by the user.
+
+The answer to this query is `true`, because `rover` is indeed a dog in our
+knowledge base. We can also ask if `spot` is a `dog`:
 
 ```prolog
 ?- dog(spot).
 false.
 ```
 
-The answer is `false`, because `spot` is *not* a dog in our knowledge base.
+`spot` is *not* a dog in our knowledge base, and so the answer to this query is
+`false`.
 
 **Syntax note** `dog(rover)` is an example of a  **compound term**, and `rover`
-is the first argument. Importantly, both `dog` and `rover` must start with a
-lowercase letter (uppercase letters are reserved for variables).
+is the first argument. Both `dog` and `rover` are **atoms**, and atoms must
+start with a lowercase letter (uppercase letters are reserved for variables).
 
 ### Rules
 
@@ -66,8 +76,7 @@ happy(homer) :- eating(homer, donut). % rule 1: homer is happy if he is eating a
 snoring(homer) :- happy(homer).       % rule 2: homer is snoring if he is happy
 ```
 
-This has one fact and one rule. We can query to see that `homer` is eating a
-donut:
+This has one fact and one rule. We can see that `homer` is eating a donut:
 
 ```prolog
 ?- eating(homer, donut).
@@ -87,9 +96,9 @@ Consider the first rule:
 happy(homer) :- eating(homer, donut).
 ```
 
-Logically, this says *if* `homer` is eating a donut, then `homer` is happy.
-Since it is a fact in our knowledge base that `homer` is eating a donut, Prolog
-will automatically deduce that `homer` is happy. We can query to see this:
+`:-` is can be read as "if". Logically, this says *if* `homer` is eating a
+donut, *then* `homer` is happy. Since it is a fact in the knowledge base that
+`homer` is eating a donut, Prolog automatically deduces that `homer` is happy:
 
 ```prolog
 ?- happy(homer).
@@ -103,8 +112,8 @@ snoring(homer) :- happy(homer).
 ```
 
 Logically, this says *if* `homer` is happy, then `homer` is snoring. We know
-from the first rule that `homer` is happy in our knowledge base, so Prolog will
-automatically deduce that `homer` is snoring:
+from the first rule that `homer` is happy, so Prolog will automatically deduce
+that `homer` is snoring:
 
 ```prolog
 ?- snoring(homer).
@@ -136,11 +145,11 @@ Rule 1 is this:
 at_beach(alan) :- sandy(alan), wet(alan).
 ```
 
-Logically, it says *if* `alan` is covered in sand *and* wet, then `alan` is at
-the beach. The comma `,` indicates *and*.
+Logically, it says *if* `alan` is covered in sand *and* he's wet, then `alan` is
+at the beach. The comma `,` means *and*.
 
-Since `sandy(alan)` and `wet(alan)` are both facts in our knowledge base, Prolog
-will automatically deduce that `alan` is at the beach:
+Since `sandy(alan)` and `wet(alan)` are both facts in the knowledge base, Prolog
+automatically deduces that `alan` is at the beach:
 
 ```prolog
 ?- at_beach(alan).
@@ -163,7 +172,7 @@ true.
 
 ### Queries with Variables
 
-Consider this knowledge base:
+Consider this knowledge base which has seven facts:
 
 ```prolog
 woman(mia).         % fact 1: mia is a woman
@@ -176,8 +185,6 @@ loves(pumpkin, honey_bunny). % fact 6: pumpkin loves honey_bunny
 loves(honey_bunny, pumpkin). % fact 7: honey_bunny loves pumpkin
 ```
 
-This knowledge base consists of seven facts.
-
 Consider this query:
 
 ```prolog
@@ -187,13 +194,13 @@ X = jody ;
 X = yolanda.
 ```
 
-Here `X` is a variable. In Prolog, variables are always start with a capital
-letter. We typed the query `woman(X)` which asks Prolog to find all the women in
-our knowledge base, i.e. all values of `X` that make the query true.
+Here `X` is a variable. Prolog variables always start with a capital letter. The
+query `woman(X)` asks Prolog to find all the women in the knowledge base, i.e.
+all values of `X` that make `woman(X)` true.
 
 When you run this in the Prolog interpreter, it stops after the first answer "X
-= mia". Then you (the user) can either type <enter> to halt the query, or you
-can type `;` to get the next answer (if there is a next answer). In this
+= mia". Then you (the user) can either type <enter> to halt the query, or  `;`
+to get the next answer (if there is a next answer). In this
 particular case, there are three values of `X` that make the query true: `mia`,
 `jody`, and `yolanda`.
 
@@ -273,7 +280,7 @@ this is why we get two answers: `Y = homer` and `Y = moe`.
 Prolog keeps going. We also get `Y = homer` and `Y = wiggum` because of the
 facts `loves(homer, donuts)` and `loves(wiggum, donuts)`.
 
-Suppose we don't want to allow someone to be jealous of themselves. So we could
+Suppose we don't want to allow someone to be jealous of themselves. We could
 modify the rule to:
 
 ```prolog
@@ -295,7 +302,7 @@ crafted to be what you want.
 
 ### A Bits Knowledge Base
 
-Here is a bits knowledge base:
+Here is a knowledge base consisting of two facts:
 
 ```prolog
 bit(0).  % fact 1: 0 is a bit
@@ -356,7 +363,7 @@ X = Y, Y = Z, Z = 1.
 It's useful to know terminology for Prolog programs. The following are
 considered **terms**:
 
-- **Constansts**
+- **Constants**
   - **Atoms**: Strings of characters like `homer`, `hot_dog`, and so on. Atoms
     start with a lowercase letter, or an underscore `_`.
   - **Numbers**: E.g. `104.2`, `-25.3`, `305`, and so on.
@@ -382,13 +389,14 @@ Suppose we have the terms `dog(rover)` and `dog(X)`. We say that these terms
 equal. In this case, the terms are equal if we set `X` to `rover`.
 
 Given two terms, **unification** is the process of finding values for the
-variables in them that make them equal. It's quite possible that two terms
-cannot be unified. For example, `dog(rover)` and `cat(X)` cannot be unified
-because there is no value for `X` that makes the two terms equal. Also,
-`dog(rover)` and `dog(spot)` cannot be unified because `rover` and `spot` are
-different atoms.
+variables in them that make the terms equal. 
 
-In Prolog, you unify terms like this:
+It's quite possible that two terms cannot be unified. For example, `dog(rover)`
+and `cat(X)` cannot be unified because there is no value for `X` that makes the
+two terms equal. Also, `dog(rover)` and `dog(spot)` cannot be unified because
+`rover` and `spot` are different atoms.
+
+In Prolog, you can unify two terms like this:
 
 ```prolog
 ?- dog(rover) = dog(X).
@@ -498,15 +506,14 @@ Prolog always backtracks to the most recent choice point.
 
 ## Lists
 
-Prolog has lists, which are sequences of 0 or more terms. For example, these are
-all lists:
+Prolog has lists, which are sequences of 0 or more terms. These are all lists:
 
 - `[]` (the empty list)
 - `[7, 5, 3]`
 - `[the, big, red, dog]`
 - `[wet(alan), big(red(cliff)), 7, [a,b]]`
 
-Use the `|` to get the first and rest of a list. For example:
+Use `|` to get the first and rest of a list:
 
 ```prolog
 ?- [Head|Tail] = [7, 5, 3].
@@ -514,7 +521,7 @@ Head = 7,
 Tail = [5, 3].
 ```
 
-Or you could use shorter variable names:
+Short variable names are often used:
 
 ```prolog
 ?- [H|T] = [7, 5, 3].
@@ -522,14 +529,14 @@ H = 7,
 T = [5, 3].
 ```
 
-If you only want the first element you can use the `_` anonymous variable:
+If you only want, say, the first element you can use the anonymous variable `_`:
 
 ```prolog
 ?- [H|_] = [7, 5, 3].
 H = 7.
 ```
 
-Or you could use the `_` to get the rest of the list:
+Or:
 
 ```prolog
 ?- [_|T] = [7, 5, 3].
@@ -547,13 +554,11 @@ member(X, [X|_]).                 % base case
 member(X, [_|T]) :- member(X, T). % recursive case
 ```
 
-The predicate uses rules instead of if-statements.
-
 There are two rules: a base case and a recursive case. The base case is
-satisfied if the first element of the list is equal to `X`. If it is not
-satisfied, then the recursive case is tried. The second rule recursively calls
-`member` on the rest of the list. Eventually, either `X` is found, or the list
-is empty (in which case neither rule is satisfied).
+satisfied if the first element of the list is equal to `X`. Otherwise, the
+recursive case is tried. The second rule recursively calls `member` on the rest
+of the list. Eventually, either `X` is found, or the list is empty (in which
+case neither rule is satisfied).
 
 It works as you might expect:
 
@@ -617,8 +622,80 @@ it to `N`".
 
 ## Appending Lists
 
-Coming soon ...
+The `append` predicate concatenates two lists:
+
+```prolog
+append([], B, B).
+append([H|T], B, [H|Result]) :- append(T, B, Result).
+```
+
+The first rule is the case case. It says that the empty list plus any other is
+the list itself.
+
+The second rule is the recursive case, and it first appends the tail of the
+first list to the second list `B`, putting the result in `Result`. Then it
+prepends the head of the first list to the result for the final result.
+
+With it you can append two lists like this:
+
+```prolog
+?- append([1,2], [3,4,5], X).
+X = [1, 2, 3, 4, 5].
+```
+
+Or you could do this:
+
+```prolog
+?- append(X, [3,4,5], [1,2,3,4,5]).
+X = [1, 2].
+```
+
+Or even, which finds all pairs of lists that append to make the third list:
+
+```prolog
+?- append(X, Y, [1,2,3,4,5]).
+X = [],
+Y = [1, 2, 3, 4, 5] ;
+X = [1],
+Y = [2, 3, 4, 5] ;
+X = [1, 2],
+Y = [3, 4, 5] ;
+X = [1, 2, 3],
+Y = [4, 5] ;
+X = [1, 2, 3, 4],
+Y = [5] ;
+X = [1, 2, 3, 4, 5],
+Y = [] ;
+false.
+```
 
 ## Reversing a List
 
-Coming soon ...
+Here is a simple but inefficient way to reverse a list:
+
+```prolog
+rev([], []).
+rev([H|T], R):- rev(T, RevT), append(RevT, [H], R).
+```
+
+The first rule is the base case: the empty list reversed is the empty list.
+
+The second rule  reverses the tail of the list, puts the result in `RevT`, and
+then it appends the head of the list to the result for the final result.
+
+While this works, it is inefficient because it creates a new list for each step
+of the recursion. A better way to reverse a list is to use an *accumulator*:
+
+```prolog
+% initial called to rev2 with empty accumulator
+rev2(L, R) :- rev2(L, [], R).
+
+rev2([], Acc, Acc).
+rev2([H|T], Acc, R):- rev2(T, [H|Acc], R).
+```
+
+The idea of adding `Acc` is that it *accumulates* the reversed list as the
+function recurses. On each call one element is added to the accumulator at the
+front, which has the effect of reversing the list. Using accumulators is a
+common technique for speeding up recursive functions in Prolog and other
+languages.

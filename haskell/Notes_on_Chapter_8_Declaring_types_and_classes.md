@@ -1,5 +1,7 @@
+# Notes on Chapter 8: Declaring Types and Classes
+
 Haskell has extensive support for types, and allows programmers to create new
-types in a number of usefulways.
+types in a number of useful ways.
 
 ## Type declarations
 
@@ -198,7 +200,7 @@ error. For instance:
 ```haskell
 safeHead :: [a] -> Maybe a
 safeHead []    = Nothing
-safeHead (x:_) = x
+safeHead (x:_) = Just x
 ```
 
 ```haskell
@@ -440,10 +442,11 @@ list2hlist = foldright (:) []
 
 The example given in the text shows how a data declaration can help make a
 "little language", in this case for propositional logic. Many functions for
-processing it mirror the structure the data declaration.
+processing it mirror the structure the data declaration. [Here is the tautology
+checker code](tautology.hs).
 
-Another interesting example is the clever method for generating all bit strings
-of a given length:
+[tautology.hs](tautology.hs) gives a nice solution to the problem of generating
+all bit strings of a given length:
 
 ```haskell
 bools :: Int -> [String]
@@ -451,12 +454,20 @@ bools 0 = [[]]
 bools n = map ('0':) bs ++ map ('1':) bs
         where bs = bools (n-1)
 
+> bools 3
+["000","001","010","011","100","101","110","111"]
+
 > take 3 (bools 10)
 ["0000000000","0000000001","0000000010"]
 ```
 
-Note that this version of `bools` has a different signature than the one given
-in the textbook.
+It's a nice example of succinct piece of code that uses recursion and
+higher-order functions to make a concise solution to a problem.
+
+However, not all programmers like this style of programming. They argue that
+such code is difficult to read and debug, especially for beginners. For
+instance, it's not easy to trace the code by, say, adding print statements to
+see what's happening.
 
 ### Explain the bug: Nat successor
 
@@ -470,23 +481,24 @@ bools_bug n = map ("0":) n1bits ++ map ("1":) n1bits
         where n1bits = bools_bug (n-1)
 ```
 
-The function is *intended* to return a list of all bit strings of length n, e.g.
-`bools_bug 3` should return `["000","001","010","011",
-"100","101","110","111"]`.
+The function is *intended* to return a list of all bit strings of length `n`,
+e.g. `bools_bug 3` should return `["000", "001", "010", "011", "100", "101",
+"110", "111"]`.
 
 ### Challenge: modified bit strings
 
-Modify `bools2` so that `bools2 0` returns the empty list `[]`, and for all
-other values of `n` `bools2 n` returns the same result as `bools n`:
+Modify `bools2` below so that `bools2 0` returns the empty list `[]`, and for
+all other values of `n` `bools2 n` returns the same result as `bools n`:
 
 ```haskell
 bools2 :: Int -> [String]
 bools2 0 = [[]]
 bools2 n = map ('0':) bs ++ map ('1':) bs
-         where bs = bools (n-1)
+         where bs = bools2 (n-1)
 ```
 
 The type signature should stay the same.
 
 ## Example: Abstract Machine
+
 See text.

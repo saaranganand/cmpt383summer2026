@@ -1,4 +1,7 @@
+# Notes on Chapter 7: Higher-order functions
+
 ## Basic concepts
+
 **Higher-order functions** are functions that take other functions as inputs, or
 return functions as outputs.
 
@@ -57,6 +60,7 @@ to currying we can pass in only a single argument to make functions like
 > could have used a name like `makeAdder2`.
 
 ### Example: the flip function
+
 `flip` is a standard Haskell function that takes a two-input function `f` as
 input, and returns a two-input function as output that does the same thing as
 `f` except the order of the input arguments is swapped. In practice, `flip` is
@@ -97,10 +101,12 @@ has the type `b -> a -> c`, i.e. `flip f` is `f` with the order of its
 parameters switched.
 
 ## Processing lists
+
 A number of standard prelude functions have nice recursive definitions, and it's
 instructive to create our own implementations.
 
-###  map
+### map
+
 The standard `map f lst` functions applies `f` to each element of `lst`. For
 example, `map f [a,b,c]` evaluates to the same thing as `[f a, f b, f c]`.
 
@@ -118,6 +124,7 @@ mymap f (x:xs) = f x : mymap f xs
 ```
 
 ### Challenge: double mapping
+
 Implement a function called `doublemap f lst` that evaluates to a list that has
 `f` applied *twice* to every element of `lst`,e .g. `doublemap f [a,b,c]`
 evaluates to `[f f a, f f b, f f c]`. For example:
@@ -132,6 +139,7 @@ evaluates to `[f f a, f f b, f f c]`. For example:
 Include the most general type signature for `doublemap`.
 
 ### filter
+
 The standard `filter pred lst` function returns a list containing all the
 elements of `lst` that satisfy the predicate `pred`. For example:
 
@@ -166,6 +174,7 @@ So we can say that `filter p lst` return all the elements in `lst` that satisfy
 `p`.
 
 ### Challenge: removeIf
+
 Implement a function called `removeIf pred lst` that evaluates to a list that is
 the same as `lst`, but all elements satisfying `pred` have been *removed*.
 `pred` is any function that takes one input and returns a `Bool`.
@@ -183,6 +192,7 @@ Make the implementation of `removeIf` as short as you can. Include the most
 general type signature for `removeIf`.
 
 ### all
+
 The standard function `all pred lst` returns `True` if the predicate `pred` is
 satisfied by *all* the elements on `lst`, and `False` otherwise.
 
@@ -198,6 +208,7 @@ True
 ```
 
 ### any
+
 The standard function `any pred lst` returns `True` if one, or more, of the
 elements in `lst` satisfy the predicate `pred`, and `False` otherwise.
 
@@ -215,6 +226,7 @@ False
 ```
 
 ### Challenge: none
+
 Implement a function called `none pred lst` that evaluates to true if *no*
 element on `lst` satisfies the predicate `pred` (any function that takes a
 single input and returns a `Bool`).  If `lst` is empty, then `true` is returned.
@@ -233,6 +245,7 @@ True
 Include the most general type signature for the `none`.
 
 ### takeWhile
+
 `takeWhile pred lst` is a standard Haskell function that returns a list of all
 the elements at the *start* of `lst` that satisfy `pred`. For instance:
 
@@ -260,6 +273,7 @@ mytakeWhile p (x:xs) = if p x
 ```
 
 ### dropWhile
+
 `dropWhile pred lst` is a standard function that returns a list that is the same
 as `lst` except all elements at the *start* of `lst` that satisfy `pred` are
 removed.
@@ -289,6 +303,7 @@ mydropWhile p (x:xs) = if p x
 ```
 
 ### Challenge: changing a value of a function
+
 Implement a function called `change_val f x y` that returns a new function that
 does the same thing as `f` for every input, except if you pass this new function
 `x` it will return `y`. Assume `f` is a function of type `a -> b`, where both
@@ -318,6 +333,7 @@ As part of your answer, include the most general type signature for the
 `change_val`.
 
 ## The `foldr` function
+
 `foldr` and `foldl` implement a recursive pattern that appears in many
 functions. So we begin with two concrete examples of folding functions.
 
@@ -398,6 +414,7 @@ But order matters for non-commutative operators like `(-)`. For example, `(1 -
 (2 - (3 - 4)))` is -2, while `(((1 - 2) - 3) - 4)` is -8.
 
 ### Challenge: counting with fold
+
 Implement a function called `fcount n lst` that calculates the number of times
 `n` (an `Int`) occurs in `lst` (a list of `Int`s). Implement `fcount` with a
 *single equation* that calls `foldr`.
@@ -416,6 +433,7 @@ Here's an example of how to use `fcount`:
 Include the type signature for `fcount`.
 
 ### Deriving the type signature for foldr
+
 The type signature of `myfoldr` can be tricky to understand. A good way to see
 what it should be is to look at a specific fold expression, e.g. `myfoldr op 0
 [4,1,2]` evaluates to the same thing as:
@@ -460,6 +478,7 @@ that works with `foldr`. Lists satisfy `Foldable`, and so in `myfoldr` we used
 `[a]` for simplicity. 
 
 ### foldr and the consed-out form of a list
+
 What does `myfoldr (:) [] [2,1,3,4]` evaluate to? This is a tricky question if
 you think about `mfoldr` in terms of its implementation.
 
@@ -772,7 +791,9 @@ point-free style with a single equation**.
 As part of your answer, include the most general type signature for `count`.
 
 ## Example: Binary string transmitter
+
 See the textbook.
 
 ## Example: Voting algorithms
+
 See the textbook.

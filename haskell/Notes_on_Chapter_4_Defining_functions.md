@@ -1,10 +1,9 @@
----
-tags: ["#haskell"]
----
+# Notes on Chapter 4: Defining functions
 
 Haskell has many different ways to define functions. 
 
 ## New from old
+
 Perhaps the most common way to define a new Haskell function is to use a set of
 equations. For example:
 
@@ -35,6 +34,7 @@ don't care about. Instead of `_` we could have written, say, `x`. But since it
 wouldn't be used anywhere `_` is preferred.
 
 ### Explain the bug: middle_bug1
+
 In your own words, explain the bug in this code, and how you would fix it (i.e.
 re-write the code so it works):
 
@@ -44,7 +44,9 @@ middle_bug1 []     = []
 middle_bug1 [x]    = []
 middle_bug1 (_:xs) = reverse tail reverse xs
 ```
+
 ### Challenge: outside
+
 Implement a function called `outside` that takes a list of any type as input,
 and returns a *tuple* `(first, last)`, where `first` is the first element of the
 list, and last is the last element. If `outside` is passed a list with fewer
@@ -68,11 +70,13 @@ For example:
 ```
 
 ### Challenge: another middle
+
 Re-write `middle1` in a different way *without* using `reverse`. Call this new
 function `middle2`. It should have exactly the same type signature as `middle1`,
 and they should return the same results for the same inputs.
 
 ### Challenge: testing middles
+
 Implement a function called `middle_test m1 m2 x` that takes three inputs:
 
 - `m1` and `m2` are middle functions with the same type signatures as `middle1`
@@ -86,6 +90,7 @@ As part of your answer, include the most general type signature for
 `middle_test`. This signature is a bit long!
 
 ## Conditional expressions
+
 In Haskell, an expression of the form `if cond then a else b` is called a
 **conditional expression**. `cond` must be a `Bool` expression that returns
 `True` or `False`. If it's `True`, then the conditional evaluates to `a`, and if
@@ -109,12 +114,14 @@ pluralize1 s  = s ++ (if last s == 's' then "" else "s")
 ```
 
 ### Challenge: another pluralize
+
 Implement a function called `pluralize2` that works the same as  `pluralize1`,
 but is implemented in a *different* way, but still using a *conditional
 expression*. It should have exactly the same type signature as `pluralize2`, and
 should return the same results for the same inputs.
 
 ### Challenge: testing pluralization
+
 Implement a function called `pluralize_test p1 p2 s` that takes three inputs:
 
 - `p1` and `p2` are pluralize functions with the same type signatures as
@@ -128,6 +135,7 @@ As part of your answer, include the most general type signature for
 `pluralize_test`. This signature is a bit long!
 
 ### Challenge: better pluralization
+
 The `pluralize1 w` function implements two rules: 
 
 1. If `w` ends with an `'s'`, then return `w` unchanged.
@@ -150,6 +158,7 @@ For example:
 ```
 
 ## Guarded equations
+
 **Guarded equations** are useful when simple equations are not flexible enough:
 
 ```haskell
@@ -175,6 +184,7 @@ sign1 :: (Num a, Ord a) => a -> [Char]
 In Haskell, strings are just lists of characters.
 
 ### Explain the bug: sign_bug1
+
 In your own words, explain the bug in this code, and how you would fix it (i.e.
 re-write the code so it works):
 
@@ -186,11 +196,13 @@ sign_bug1 n | n == 0    = "zero"
 ```
 
 ### Challenge: sign with conditionals
+
 Re-write `sign1` *without* using guards, and instead using `if ... then ...
 else`.  It should have exactly the same type signature as `sign1`. Call it
 `sign2`. `sign1` and `sign2` should return the same results for the same inputs.
 
 ### Challenge: Heron's formula
+
 [Heron's formula](https://en.wikipedia.org/wiki/Heron%27s_formula) calculates
 the area of a triangle given the lengths of its sides. Implement the function
 `heron_area a b c`, where `a`, `b`, and `c` are the lengths of the sides of a
@@ -212,6 +224,7 @@ triangle. For example, there is no triangle with side lengths 1, 2, and 4. You
 do *not* need to check for such cases in this function.
 
 ## Pattern matching
+
 Haskell uses simple **pattern matching** to match function inputs. For example:
 
 ```haskell
@@ -236,6 +249,7 @@ The first 4 equations in `coin1` match specific integers.  The final equation
 uses the **wildcard** symbol `_`, which in this case matches *any* value.
 
 ### Challenge: a better coin
+
 Implement a function called `coin2` that works like `coin1`, but the wildcard
 equation returns a string that includes the value of the coin.  For example,
 `coin2 28` should return a string like `"28 is an unknown coin"`.
@@ -256,6 +270,7 @@ coin_bug1 n | 1         = "penny"
 ```
 
 ### Explain the bug: same_bug1
+
 In your own words, explain the bug in this code, and how you would fix it (i.e.
 re-write the code so it works):
 
@@ -269,6 +284,7 @@ The intention is that the function return `True` when its two inputs are the
 same, and `False` otherwise. However, it doesn't work correctly.
 
 ### Example: nand
+
 The **nand** function is basic logical operator that it is often used in
 hardware. Nand-gates can be used to construct every other kinds of logical
 function, and so nand is all you need.
@@ -305,6 +321,7 @@ nand _    _    = True
 Each `_` matches *any* value. They do not need to match the same values.
 
 ## Tuple Patterns
+
 ```haskell
 get_x :: (Double, Double) -> Double
 get_x (x, _) = x
@@ -314,6 +331,7 @@ get_y (y, _) = y
 ```
 
 ## List patterns
+
 Functions that process lists often use list patterns. For example:
 
 ```haskell
@@ -407,6 +425,7 @@ applications of `:` like this:
 > **Comparison** `cons`  in Racket works the same was `:` in this case.
 
 ### Challenge: length of short lists
+
 Implement a function called `short_length lst` that returns 0 if `lst` is empty,
 1 if it is has a single element, 2 if it has two elements, and 3 if it has three
 elements. For lists of any other length, return -1.
@@ -417,10 +436,12 @@ Implement `short_length lst` using just pattern matching, and without using
 Also write the most general type signature. The return value is `Int`.
 
 ### Challenge: consed-out apple
+
 Write "apple" in consed-out form. Strings in Haskell are just lists of
 characters. Use single-quotes for characters, e.g. `'a'` is a character.
 
 ### Explain the bug: same_bug1
+
 In your own words, explain the bug in this code, and how you would fix it (i.e.
 re-write the code so it works):
 
@@ -436,6 +457,7 @@ The intention is that `diff_heads_bug1 a b` returns  `False` if the heads of the
 lists are the same, and `True` in every other case.
 
 ## Lambda expressions
+
 **Lambda expressions**, or **lambda functions**, can be thought of as functions
 without names. In practice they can be useful when you need a small function
 that is only used once or twice.
@@ -482,6 +504,7 @@ This style of defining functions has little more punctuation, i.e. an extra `\`
 and `->`.
 
 ## Operator sections
+
 Binary operators such as `+` or `*` are usually written in **infix** style with
 the operator going *between* its arguments, e.g. `2 + 5`. They can also be
 written in **prefix** style using ()-brackets, e.g. `(+) 2 5`. Both styles can
@@ -522,11 +545,13 @@ The position of the parameter in the section can make a difference. For example,
 ```
 
 ### Challenge: reciprocals
+
 Write an expression that uses `map` and an appropriate operator section to
 calculate the reciprocals of a list of numbers. For example, the reciprocal of 5
 is 1/5.
 
 ### Challenge: fourth powers
+
 Write a function called `h n` that returns $h(n)=1^4 + 2^4 + 3^4 + \ldots n^4$,
 the sum of the fourth powers up to `n`. Use an *operator section* in your
 answer. If `n` is 0 or less, then use the standard Haskell `error msg` function

@@ -1,12 +1,13 @@
----
-tags: ["#haskell"]
----
+# Notes on Chapter 6: Recursive functions
+
 Since Haskell has no loops, recursion is a fundamental implementation technique.
 
 ## Basic concepts
+
 A **recursive function** is a function that calls itself, either directly or indirectly.
 
-For example, the **factorial** of a non-negative integer $n$ is defined to be $n!=1\cdot 2 \cdot 3 \cdot \ldots \cdot n$, and $0!=1$.
+For example, the **factorial** of a non-negative integer $n$ is defined to be
+$n!=1\cdot 2 \cdot 3 \cdot \ldots \cdot n$, and $0!=1$.
 
 Here is a non-recursive function that calculates it:
 
@@ -23,19 +24,30 @@ fact2 0 = 1                -- base case
 fact2 n = n * fact2 (n-1)  -- recursive case
 ```
 
-Recursive functions are normally divided into **base case** and **recursive case** rules. A base case contains no recursive call, while a recursive case has one or more recursive calls. 
+Recursive functions are normally divided into **base case** and **recursive
+case** rules. A base case contains no recursive call, while a recursive case has
+one or more recursive calls. 
 
-Bases cases tell a recursive function when to stop. They play a role similar to the conditional expression in a while-loop in languages like Python or C++. Try commenting out the base case of `fact1` to see what happens.
+Bases cases tell a recursive function when to stop. They play a role similar to
+the conditional expression in a while-loop in languages like Python or C++. Try
+commenting out the base case of `fact1` to see what happens.
 
 ### Challenge: recursive squares
-Implement a function called `sqr_sum n` that *uses recursion* to calculate the sum $1^2+2^2+\ldots+n^2$. Assume `n` is an integer greater than 0.
+
+Implement a function called `sqr_sum n` that *uses recursion* to calculate the
+sum $1^2+2^2+\ldots+n^2$. Assume `n` is an integer greater than 0.
 
 Include the most general type signature for the `sqr_sum`.
 
 ### Challenge: odd factorial
-Implement a function called `odd_fact n` that *uses recursion* to calculate the product of the *odd* numbers that are less than, or equal to `n`. For example, if `n` is odd then $1 \cdot 3 \cdot 5 \ldots n$ is returned, and if `n` is even then $1 \cdot 3 \cdot 5 \ldots (n-1)$ is returned.
 
-Assume `n` is an `Integer` greater than 0. Include the type signature for `odd_fact`.
+Implement a function called `odd_fact n` that *uses recursion* to calculate the
+product of the *odd* numbers that are less than, or equal to `n`. For example,
+if `n` is odd then $1 \cdot 3 \cdot 5 \ldots n$ is returned, and if `n` is even
+then $1 \cdot 3 \cdot 5 \ldots (n-1)$ is returned.
+
+Assume `n` is an `Integer` greater than 0. Include the type signature for
+`odd_fact`.
 
 For example:
 
@@ -57,7 +69,8 @@ For example:
 ```
 
 ## Recursion on lists
-Recursion often applies naturally to lists. For instance, the product of all the numbers on a list can be calculated like this:
+Recursion often applies naturally to lists. For instance, the product of all the
+numbers on a list can be calculated like this:
 
 ```haskell
 myproduct :: Num a => [a] -> a
@@ -96,7 +109,8 @@ rev (x:xs) = rev xs ++ [x]
 [10,9,8,7,6,5,4,3,2,1]
 ```
 
-In Haskell, `(++)` appends two lists. We can create our own recursive version like this:
+In Haskell, `(++)` appends two lists. We can create our own recursive version
+like this:
 
 ```haskell
 append :: [a] -> [a] -> [a]
@@ -109,9 +123,12 @@ append (x:xs) ys = x : (append xs ys)
 [1.2,8.7]
 ```
 
-Recall that `:` creates a new list by adding an item to the start of a list, e.g. `6 : [1,2]` evaluates to `[6,1,2]`.
+Recall that `:` creates a new list by adding an item to the start of a list,
+e.g. `6 : [1,2]` evaluates to `[6,1,2]`.
 
-This `insert` function assumes the input list is in ascending sorted order, and inserts a given element into the correct location so that the list remains sorted:
+This `insert` function assumes the input list is in ascending sorted order, and
+inserts a given element into the correct location so that the list remains
+sorted:
 
 ```haskell
 insert :: Ord a => a -> [a] -> [a]
@@ -138,10 +155,15 @@ isort (x:xs) = insert x (isort xs)
 [0,1,2,2,5,9,9]
 ```
 
-Our aim here is to make functions that are correct, flexible, and easy to read. We have chosen not to be too concerned with performance. Indeed, recursion plus Haskell's immutable lists can often result in code that is less efficient than straightforward loop-based implementations in languages like C++ or Python.
+Our aim here is to make functions that are correct, flexible, and easy to read.
+We have chosen not to be too concerned with performance. Indeed, recursion plus
+Haskell's immutable lists can often result in code that is less efficient than
+straightforward loop-based implementations in languages like C++ or Python.
 
 ### Challenge: recursive counting
-Implement a function called `count a lst` that uses recursion to calculate the number of times `a` occurs in `lst`. For example:
+
+Implement a function called `count a lst` that uses recursion to calculate the
+number of times `a` occurs in `lst`. For example:
 
 ```haskell
 > count 'a' "banana"
@@ -164,17 +186,26 @@ ssort xs = [m] ++ ssort (remove m xs)
            where m = mymin xs
 ```
 
-Using recursion, implement your own versions of both `remove m xs` (removes the *first* occurrence of `m` from `xs`), and `mymin xs` (returns the smallest element in `xs`).
+Using recursion, implement your own versions of both `remove m xs` (removes the
+*first* occurrence of `m` from `xs`), and `mymin xs` (returns the smallest
+element in `xs`).
 
-As part of your answers, include the most general type signature for `remove` and `mymin`.
+As part of your answers, include the most general type signature for `remove`
+and `mymin`.
 
 ### Challenge: unique strings
-Call a string **unique** if all pairs of adjacent characters are different. For example, `""`, `"m"`, `"up"`, `"abab"`, and `"once upon a time"` are all unique strings. But `"aa"`, `"balloon"`, and `"What??"` are not unique.
+
+Call a string **unique** if all pairs of adjacent characters are different. For
+example, `""`, `"m"`, `"up"`, `"abab"`, and `"once upon a time"` are all unique
+strings. But `"aa"`, `"balloon"`, and `"What??"` are not unique.
 
 Implement the following functions:
 
-1. `is_unique s` returns `True` if `s` is a unique string, and `False` otherwise.
-2. `uniquify s` returns a unique version of `s`. If `s` is already unique then it's returned unchanged. Otherwise, for each consecutive sequence of 2 or more identical characters, remove all but one of the characters. For example:
+1. `is_unique s` returns `True` if `s` is a unique string, and `False`
+   otherwise.
+2. `uniquify s` returns a unique version of `s`. If `s` is already unique then
+   it's returned unchanged. Otherwise, for each consecutive sequence of 2 or
+   more identical characters, remove all but one of the characters. For example:
 
    ```haskell
     > uniquify "aaaabccddd"
@@ -192,4 +223,6 @@ Implement the following functions:
 ## Advice on recursion
 The textbook provides more examples and advice for writing recursive functions.
 
-Despite their usefulness, in Haskell recursive functions tend to be avoided. Recursion a somewhat low-level technique, and it is often better to use, say, list comprehensions or higher-order functions like `map` and `zip`.
+Despite their usefulness, in Haskell recursive functions tend to be avoided.
+Recursion a somewhat low-level technique, and it is often better to use, say,
+list comprehensions or higher-order functions like `map` and `zip`.

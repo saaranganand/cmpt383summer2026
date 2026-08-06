@@ -1,4 +1,4 @@
-% sum_min.pl
+% kb_sum_min.pl
 
 % sum of a list
 sum([], 0).

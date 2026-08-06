@@ -1,3 +1,5 @@
+# Notes on Chapter 12 Monads and more
+
 Chapter 12 discusses a number of useful functional programming patterns:
 *functors*, *applicatives*, and *monads*. They can be overwhelming the first
 time you learn about them, and so in these notes we will touch upon just a few
@@ -5,14 +7,15 @@ illustrative examples and ideas. For more details, see chapter 12 of the
 textbook.
 
 ## ($): the Application Operator
+
 The expression `f x` is an example of **function application**: the function `f`
 is applied to the value `x`, and a result is returned.
 
 In Haskell, all functions take a single argument and return a single value.
 
-The `($)` is the **function application** operator, and using it you can write
-`($) f x` instead of just `f x`. You could also use it in infix style, `f $ x`.
-The three expression `f x`, `($) f x`, and `f $ x` are all different ways of
+`($)` is the **function application** operator, and using it you can write `($)
+f x` instead of just `f x`. You could also use it in infix style, `f $ x`. The
+three expression `f x`, `($) f x`, and `f $ x` are all different ways of
 applying `f` to `x`.
 
 The type signature of `($)` is:
@@ -47,13 +50,15 @@ But using the `($)` operator lets you skip the brackets:
 `($)` has lower precedence than regular application, and so `tail ["cat","dog"]`
 is evaluated first. This gives `head $ ["dog"]`, which returns `'d'`.
 
-You never *need* to use this trick with `($)`, but many Haskell programmers
-prefer it to writing extra brackets.
+You never *need* to use this trick, but many Haskell programmers prefer it to
+writing extra brackets.
 
 ## More About map
+
 The standard `map` function can be thought of in a couple of different ways.
 
 ### map as Generalized Application
+
 Let's compare the type signature of `($)` to the type signature of the standard
 `map` function:
 
@@ -69,6 +74,7 @@ returns a *single* output, while `map` applies a single function to a *list* of
 values and returns a *list* of result.
 
 ### map as a Function Constructor
+
 Another way to think about `map` is it that takes a *function* of type `a -> b`
 as input and returns a *function* of type `[a] -> [b]` as output:
 
@@ -96,9 +102,10 @@ plurals = map (++"s")
 ```
 
 ### Functors: Generalizing map
-There are data structures other than lists that can contain elements. For
-instance, trees, matrices, and stacks all contain values. We'll refer to data
-structures that contain values as **containers**.
+
+Many data structures other than lists that can contain elements. For instance,
+trees, matrices, and stacks all contain values. We'll refer to such data
+structures as **containers**.
 
 The standard `map` function applies a function to every element of a *list*. We
 could also apply a function to every element of some other kind of container.
@@ -137,6 +144,7 @@ container.
 > We won't cover `(<$)` further in these notes.
 
 ### Examples of Functors
+
 Suppose you define a tree data type like this:
 
 ```haskell
@@ -158,9 +166,9 @@ instance Functor Tree where
 This `fmap` applies the function `f` to every value in the tree.
 
 > **Note** The line `-- fmap :: (a -> b) -> Tree a -> Tree b` is a commented-out
-> type signature for `fmap`. It's usually a good idea to write down type
-> signatures when writing instances. Unfortunately, the `instance` structure
-> doesn't allow explicit type signatures. 
+> type signature for `fmap`. It's usually a good idea to write type signatures
+> when writing instances. Unfortunately, the `instance` structure doesn't allow
+> explicit type signatures.
 
 Haskell's standard list type already has `map`, but `fmap` works as well and is
 defined like this:
@@ -206,6 +214,7 @@ If you map a function `f` onto `Nothing`, then you get `Nothing`. If you map it
 onto a `Just x`, then the `f` is applied to the `x` inside `Just`.
 
 ### Functor Laws
+
 To guarantee that a functor works in the way we expect a `map`-like function to
 work, it needs to obey these two mathematical laws:
 
@@ -243,6 +252,7 @@ they hold. See chapter 12 of the textbook for more information.
 > in practice you only need to check that the first law holds.
 
 ## Applicative Functors
+
 Functors are useful, but they only map functions with a *single* argument.
 **Applicative functors** are a generalization of functors that let you do
 something similar to mapping with functions that take two, or more, arguments.
@@ -315,6 +325,7 @@ states mathematical laws that define what it means for applicatives to behave
 sensibly. See chapter 12 of the textbook for more details.
 
 ## Monads
+
 **Monads** are a generalization of applicatives and functors that have special
 importance in Haskell : any type that implements a monad can be used with
 **do**-notation. The name *monad* comes from [category
@@ -344,6 +355,7 @@ of type `m a`, and a function that converts a value of type `a` into a container
 `b`. 
 
 ### Intuition for Monads
+
 So why is this definition so useful? To get some intuition for it, lets work
 through an example that builds up to do-notation.
 
@@ -466,6 +478,7 @@ Just 6
 ```
 
 ### do-expressions
+
 Haskell's `Monad` class *doesn't* use the name `transform`. Instead, it names it
 `(>>=)`, which is called the **bind operator**:
 
@@ -613,9 +626,10 @@ Nothing
 ```
 
 ### Final Note
+
 Our purpose here is to gain some intuition for why monads are useful, and why
 they are defined the way they are. This is just the beginning of monads, and
-there are a large number of related ideas.
+there are many related ideas.
 
 In practice, the most important `Monad` type is `IO`, since all of Haskell's
 standard input and output is done with `IO`. Input and output is typically done

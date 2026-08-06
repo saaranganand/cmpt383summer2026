@@ -73,37 +73,43 @@
 -- myprod (x:xs) = x * myprod xs
 
 -- mymap :: (a -> b) -> [a] -> [b]
-mymap f xs = foldr op [] xs
-             where op x accum = (f x) : accum
+-- mymap f xs = foldr op [] xs
+--              where op x accum = (f x) : accum
 
-myreverse :: [a] -> [a]
-myreverse xs = foldr op [] xs
-               where op x accum = accum ++ [x]
+-- myreverse :: [a] -> [a]
+-- myreverse xs = foldr op [] xs
+--                where op x accum = accum ++ [x]
 
-myfilter :: (a -> Bool) -> [a] -> [a]
-myfilter p xs = foldr op [] xs
-                where op x accum = if p x
-                                   then x : accum
-                                   else accum
+-- myfilter :: (a -> Bool) -> [a] -> [a]
+-- myfilter p xs = foldr op [] xs
+--                 where op x accum = if p x
+--                                    then x : accum
+--                                    else accum
 
-f n = n^2
-g n = 3*n+1
-h = f . g
+-- f n = n^2
+-- g n = 3*n+1
+-- h = f . g
 
-twice :: (a -> a) -> a -> a
--- twice f x = f (f x)
--- twice f x = (f . f) x
-twice f = f . f
+-- twice :: (a -> a) -> a -> a
+-- -- twice f x = f (f x)
+-- -- twice f x = (f . f) x
+-- twice f = f . f
 
-sumSquaresEven = sum . map (^2) . filter even
+-- This shows a sequence of functions that can be applied to a list by calling
+-- sumSquaresEven lst. The functions are applied from right to left, i.e. first
+-- filter even, then map (^2), then sum.
+--
+-- In general, a composed expresison like h . g . f means apply f, then g, then
+-- h.
+-- sumSquaresEven = sum . map (^2) . filter even
 
 -- do f, then g, then h
 -- h . g . f
 
-type Predicate a = a -> Bool
+-- type Predicate a = a -> Bool
 
-remove_if :: Predicate a -> [a] -> [a]
-remove_if p lst = filter (not . p) lst
+-- remove_if :: Predicate a -> [a] -> [a]
+-- remove_if p lst = filter (not . p) lst
 
 -- data MyBool = True | False
 -- my_and :: MyBool -> MyBool -> MyBool
@@ -132,8 +138,40 @@ perimeter :: Shape -> Float
 perimeter (Circle r) = 2 * pi * r
 perimeter (Rect w h) = 2 * (w + h)
 
+--
+-- The Maybe type is pre-defined in the Haskell prelude. It is used to represent
+-- optional values, which can be useful in error checking.
+--
 -- data Maybe a = Nothing | Just a
+--
 
 safeHead :: [a] -> Maybe a
 safeHead []    = Nothing
-safeHead (x:_) = x
+safeHead (x:_) = Just x 
+
+-- add :: Maybe Double -> Maybe Double -> Double
+-- add Nothing  Nothing  = 0
+-- add Nothing  (Just n) = n
+-- add (Just n) Nothing  = n
+-- add (Just m) (Just n) = m + n
+
+add :: Maybe Double -> Maybe Double -> Maybe Double
+add Nothing  Nothing  = Nothing
+add Nothing  (Just n) = Nothing
+add (Just n) Nothing  = Nothing
+add (Just m) (Just n) = Just (m + n)
+
+
+-- Nat is a recursive data type representing the natural numbers 0, 1, 2, ...
+data Nat = Zero | Succ Nat
+    deriving (Eq, Show)
+
+-- convert a Nat to an int
+nat2int :: Nat -> Int
+nat2int Zero     = 0
+nat2int (Succ n) = 1 + nat2int n
+
+-- convert an int to a Nat
+int2nat :: Int -> Nat
+int2nat 0 = Zero
+int2nat n = Succ (int2nat (n-1))

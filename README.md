@@ -14,3 +14,11 @@
   - [Haskell problem set](haskell/Haskell_problemset.md)
 - [Prolog notes](prolog/README.md)
   - [Prolog problem set](prolog/prolog_questions.md)
+
+## Quiz Sample Solutions
+
+- [Quiz 1 (Python) sample solutions (PDF)](quiz1_Python_383_sol.pdf)
+- [Quiz 2 (Go) sample solutions (PDF)](quiz2_Go_383_sol.pdf)
+- [Quiz 3 (Racket) sample solutions (PDF)](quiz3_Racket_383_sol_shared.pdf)
+- [Quiz 4 (Haskell) sample solutions (PDF)](quiz4_Haskell_383_sol.pdf)
+- [Quiz 5 (Prolog) sample solutions (PDF)](quiz5_Prolog_383_sol.pdf)

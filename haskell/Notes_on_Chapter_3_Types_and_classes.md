@@ -1,6 +1,4 @@
----
-tags: ["#haskell"]
----
+# Notes on Chapter 3: Types and classes
 
 A **type** is a collection of related values. For example, the Haskell type
 `Bool` has two value, `True` and `False`.
@@ -35,6 +33,7 @@ safe** language in the sense that there will never be a type error during the
 > system](https://en.wikipedia.org/wiki/Hindley%E2%80%93Milner_type_system).
 
 ## Type Inference
+
 Haskell also uses **type inference** to determine the type of a value without
 the programmer needing to have to explicitly write the type. This is one of the
 things that makes Haskell programs so concise.
@@ -61,6 +60,7 @@ It can also help us find **type errors**. For example, 3 is *not* of type
 *before* it evaluates the expression. 
 
 ## Some basic Haskell types
+
 Haskell types always start with a capital letter. Here are a few basic ones that
 you should know:
 
@@ -109,6 +109,7 @@ A few facts about Haskell lists:
 - Because Haskell uses **lazy evaluation**, lists can be infinite.
 
 ## Tuple types
+
 A **tuple** is a *finite sequence* of 0 or more values, and the values *can* be
 of different types. Haskell use `()`-brackets to indicate tuples and their
 types:
@@ -130,6 +131,7 @@ A few facts about tuples:
 - Tuple arities must be finite.
 
 ## Function types
+
 A **function** is a *mapping* from one type to another. `a -> b` is the type of
 a function that takes a value of type `a` as input and returns a value of type
 `b` as output. For example:
@@ -172,6 +174,7 @@ undefined result:
 elements, and so `head []` causes an error.
 
 ## Curried  functions
+
 Consider this definition:
 
 ```haskell
@@ -248,6 +251,7 @@ function's output, and the others are the types of the input values.
 > [Gottlob Frege](https://en.wikipedia.org/wiki/Gottlob_Frege).
 
 ## Polymorphic types
+
 Some list functions, such as `head`, work with lists of *any* type of elements:
 
 ```haskell
@@ -303,6 +307,7 @@ can't display functions, so you get an error if you evaluate a function in the
 interpreter.
 
 ## Overloaded types
+
 Haskell's `+` function works with any numeric type, and it's type signature
 looks like this:
 
@@ -362,6 +367,7 @@ containing values of the same type, and returns a new list of consisting of all
 the values of the first list followed by all the values of the second list.
 
 ## Basic classes
+
 Haskell provides a number of pre-defined type classes used throughout the
 standard prelude. Classes must always start with a capital letter.
 
