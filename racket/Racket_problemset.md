@@ -4,7 +4,7 @@ The questions on the Racket quiz will mainly be variations of the questions
 below, or questions that are similar. Don't use any loops are built-in functions
 that do the same thing: write solutions that use recursion and basic functions
 like `first`, `rest`, `empty?`, `cons`, `append`, and `member`, or that use
-higher-order functions like `map`, `filter`, and `fold-left`.
+higher-order functions like `map`, `filter`, and `fold-right`.
 
 Please post your answers to the discussion board to share with other students.
 

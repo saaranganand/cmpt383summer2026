@@ -513,7 +513,7 @@ brackets, otherwise Haskell interprets `signum -3` as `signum` minus `3`:
 
 To avoid this confusion we often need to put negative numbers in brackets.
 
-`Integral` is for **integer types**. These types require all the functions of
+`Integral` is for **integer types**. These types zrequire all the functions of
 `Num`, plus two more:
 
 ```haskell

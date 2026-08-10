@@ -90,6 +90,7 @@ To handle impure calculations, it uses clever functional patterns such as
 *monads* and *applicatives*.
 
 ### Lazy evaluation
+
 An unusual feature of Haskell is how it evaluates function calls like `f(g(2))`.
 In most programming languages, first `g(2)` is evaluated, and then the result of
 that is passed to `f`.
@@ -137,6 +138,7 @@ of its features adopted by more mainstream languages.
 ## A Taste of Haskell
 
 ### Summing Numbers
+
 A function for summing the numbers in a list can be written in Haskell as two
 **equations**:
 

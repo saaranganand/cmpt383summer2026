@@ -257,6 +257,7 @@ equation returns a string that includes the value of the coin.  For example,
 `coin2` should have exactly the same type signature as `coin1`. 
 
 ### Explain the bug: coin_bug1
+
 In your own words, explain the bug in this code, and how you would fix it (i.e.
 re-write the code so it works):
 

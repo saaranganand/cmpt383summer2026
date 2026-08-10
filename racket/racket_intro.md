@@ -894,7 +894,7 @@ It is conventional (but not required) to use `[]`-brackets for the variable
 bindings. You could write `let` like this if you prefer:
 
 ```lisp
-(let ((v1 val1)  ;; ()-brackets can be used intead of 
+(let ((v1 val1)  ;; ()-brackets can be used instead of 
       (v2 val2)  ;; []-brackets
       ...
       (vn valn)
